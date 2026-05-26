@@ -1,0 +1,29 @@
+[
+  {
+    "name": "kikiapi",
+    "url": "https://kikiapi.980822.xyz",
+    "tag": "API",
+    "accent": "pink",
+    "emoji": "🔑",
+    "description": "API 集成网站。如果要调用 API，请先在这里创建 API key。",
+    "cta": "创建 API key"
+  },
+  {
+    "name": "image 图片生成",
+    "url": "https://kimage.980822.xyz",
+    "tag": "Image",
+    "accent": "purple",
+    "emoji": "🎨",
+    "description": "image2 生成网站。需要使用 kikiapi 的 API key，并选择 plus 分组。",
+    "cta": "打开 image2"
+  },
+  {
+    "name": "grok 搜索",
+    "url": "https://kikigrok.980822.xyz/webui",
+    "tag": "Search",
+    "accent": "cyan",
+    "emoji": "🔎",
+    "description": "Web 访问 Grok 搜索功能。默认建议使用 grok-4.20-fast 模型，访问密码咨询 kiki。",
+    "cta": "进入 Grok WebUI"
+  }
+]
