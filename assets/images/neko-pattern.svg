@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="soft neko background">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7fb"/>
+      <stop offset="0.52" stop-color="#fbf2ff"/>
+      <stop offset="1" stop-color="#effbff"/>
+    </linearGradient>
+    <radialGradient id="pink" cx="0.12" cy="0.12" r="0.62">
+      <stop offset="0" stop-color="#ff8fc7" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ff8fc7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cyan" cx="0.86" cy="0.18" r="0.58">
+      <stop offset="0" stop-color="#64d9f6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#64d9f6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="purple" cx="0.72" cy="0.92" r="0.68">
+      <stop offset="0" stop-color="#9b7cff" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#9b7cff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <symbol id="paw" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="40" rx="16" ry="12"/>
+      <circle cx="16" cy="24" r="8"/>
+      <circle cx="30" cy="16" r="8"/>
+      <circle cx="44" cy="20" r="8"/>
+      <circle cx="52" cy="32" r="7"/>
+    </symbol>
+    <symbol id="ears" viewBox="0 0 120 80">
+      <path d="M18 66 C20 36 29 15 45 4 C53 27 58 45 60 66" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M60 66 C64 39 72 19 91 5 C99 27 104 46 102 66" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M43 60 C54 68 68 68 80 60" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+  <rect width="1200" height="720" fill="url(#g)"/>
+  <rect width="1200" height="720" fill="url(#pink)"/>
+  <rect width="1200" height="720" fill="url(#cyan)"/>
+  <rect width="1200" height="720" fill="url(#purple)"/>
+  <g opacity="0.12" color="#f263ad">
+    <use href="#ears" x="820" y="72" width="180" height="120" transform="rotate(9 910 132)"/>
+    <use href="#ears" x="130" y="420" width="150" height="100" transform="rotate(-13 205 470)"/>
+  </g>
+  <g fill="#ff8fc7" opacity="0.13">
+    <use href="#paw" x="105" y="120" width="48" height="48" transform="rotate(-16 129 144)"/>
+    <use href="#paw" x="1000" y="262" width="54" height="54" transform="rotate(18 1027 289)"/>
+    <use href="#paw" x="706" y="526" width="42" height="42" transform="rotate(-24 727 547)"/>
+    <use href="#paw" x="330" y="78" width="34" height="34" transform="rotate(12 347 95)"/>
+  </g>
+  <g opacity="0.14" stroke="#9b7cff" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M990 540 C1045 508 1078 545 1134 510"/>
+    <path d="M70 310 C134 278 164 326 216 286"/>
+  </g>
+  <g fill="#ffffff" opacity="0.34" filter="url(#blur)">
+    <circle cx="286" cy="178" r="52"/>
+    <circle cx="946" cy="456" r="70"/>
+    <circle cx="578" cy="604" r="46"/>
+  </g>
+</svg>
