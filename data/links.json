@@ -25,5 +25,14 @@
     "emoji": "🔎",
     "description": "Web 访问 Grok 搜索功能。默认建议使用 grok-4.20-fast 模型，访问密码咨询 kiki。",
     "cta": "进入 Grok WebUI"
+  },
+  {
+    "name": "OpenWebUI",
+    "url": "https://webgpt.980822.xyz",
+    "tag": "Chat",
+    "accent": "cyan",
+    "emoji": "💬",
+    "description": "kiki 的 OpenWebUI 项目入口，用于统一访问已配置的 AI 对话与模型服务。",
+    "cta": "打开 OpenWebUI"
   }
 ]
