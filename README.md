@@ -7,6 +7,7 @@
 - kikiapi: https://kikiapi.980822.xyz
 - image 图片生成: https://kimage.980822.xyz
 - grok 搜索: https://kikigrok.980822.xyz/webui
+- OpenWebUI: https://webgpt.980822.xyz
 
 ## 本地文件
 
