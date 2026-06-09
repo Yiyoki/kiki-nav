@@ -6,30 +6,30 @@
     {
       "ok": true,
       "code": "204",
-      "ms": 1375,
-      "seconds": "1.363329",
+      "ms": 546,
+      "seconds": "0.534455",
       "stderr": "",
       "key": "google",
       "name": "Google",
       "url": "https://www.google.com/generate_204",
-      "level": "yellow"
-    },
-    {
-      "ok": true,
-      "code": "301",
-      "ms": 419,
-      "seconds": "0.407897",
-      "stderr": "",
-      "key": "github",
-      "name": "GitHub",
-      "url": "https://www.github.com/",
       "level": "green"
     },
     {
       "ok": true,
+      "code": "301",
+      "ms": 2352,
+      "seconds": "2.340421",
+      "stderr": "",
+      "key": "github",
+      "name": "GitHub",
+      "url": "https://www.github.com/",
+      "level": "yellow"
+    },
+    {
+      "ok": true,
       "code": "200",
-      "ms": 2548,
-      "seconds": "2.536090",
+      "ms": 3015,
+      "seconds": "3.003414",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,19 +39,19 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 607,
-      "seconds": "0.593130",
+      "ms": 1260,
+      "seconds": "1.248449",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
       "url": "https://www.wikipedia.org/",
-      "level": "green"
+      "level": "yellow"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 620,
-      "seconds": "0.608865",
+      "ms": 558,
+      "seconds": "0.547251",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
@@ -59,11 +59,11 @@
       "level": "green"
     }
   ],
-  "generated_at": "2026-06-09 22:31:37 北京时间",
+  "generated_at": "2026-06-09 22:42:24 北京时间",
   "overall": "yellow",
   "summary": {
     "success_count": 5,
     "total_count": 5,
-    "avg_ms": 1114
+    "avg_ms": 1546
   }
 }
