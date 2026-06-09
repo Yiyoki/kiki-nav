@@ -77,7 +77,7 @@ def main():
         'subscription_label': 'kycloud',
         'proxy': PROXY,
         'tests': [],
-        'generated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        'generated_at': time.strftime('%Y-%m-%d %H:%M:%S 北京时间', time.localtime(time.time() + 8 * 3600)),
     }
     for key, name, url, ok_codes, warn_ms in TESTS:
         result = probe(url)

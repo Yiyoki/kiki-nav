@@ -354,7 +354,7 @@
               }
             }
             if (payload.generated_at) {
-              statusMeta.generatedAt = payload.generated_at.replace('T', ' ').replace('Z', ' UTC');
+              statusMeta.generatedAt = payload.generated_at;
             }
           }
         }
