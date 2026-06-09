@@ -4,21 +4,21 @@
   "proxy": "http://127.0.0.1:7892",
   "tests": [
     {
-      "ok": false,
-      "code": "000",
-      "ms": 5016,
-      "seconds": "5.004229",
-      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.google.com:443",
+      "ok": true,
+      "code": "204",
+      "ms": 507,
+      "seconds": "0.497281",
+      "stderr": "",
       "key": "google",
       "name": "Google",
       "url": "https://www.google.com/generate_204",
-      "level": "red"
+      "level": "green"
     },
     {
       "ok": true,
       "code": "301",
-      "ms": 744,
-      "seconds": "0.732220",
+      "ms": 359,
+      "seconds": "0.349466",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -28,8 +28,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 1300,
-      "seconds": "1.288060",
+      "ms": 1254,
+      "seconds": "1.243638",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,8 +39,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 795,
-      "seconds": "0.782964",
+      "ms": 510,
+      "seconds": "0.500115",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -50,8 +50,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 558,
-      "seconds": "0.544392",
+      "ms": 486,
+      "seconds": "0.475601",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
@@ -59,11 +59,11 @@
       "level": "green"
     }
   ],
-  "generated_at": "2026-06-10 03:12:09 北京时间",
-  "overall": "yellow",
+  "generated_at": "2026-06-10 03:20:47 北京时间",
+  "overall": "green",
   "summary": {
-    "success_count": 4,
+    "success_count": 5,
     "total_count": 5,
-    "avg_ms": 1683
+    "avg_ms": 623
   }
 }
