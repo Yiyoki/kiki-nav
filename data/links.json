@@ -34,5 +34,14 @@
     "emoji": "💬",
     "description": "kiki 的 OpenWebUI 项目入口，用于统一访问已配置的 AI 对话与模型服务。",
     "cta": "打开 OpenWebUI"
+  },
+  {
+    "name": "Ki梯挂了吗",
+    "url": "./pages/ki-ti-gua-le-ma.html",
+    "tag": "Proxy",
+    "accent": "purple",
+    "emoji": "📶",
+    "description": "代理外网健康检测页。用 kycloud 订阅代理访问 Google、GitHub、Cloudflare、Wikipedia 等典型外网链接，并展示时间序列状态条。",
+    "cta": "查看代理状态"
   }
 ]

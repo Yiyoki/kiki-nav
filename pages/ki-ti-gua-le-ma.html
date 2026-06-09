@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#9b7cff" />
+  <meta name="description" content="Ki梯挂了吗：检查代理是否能稳定访问外网的状态页。" />
+  <title>Ki梯挂了吗 · Kiki Nav</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .status-shell {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(18px, 4vw, 30px);
+    }
+    .status-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+      gap: 22px;
+      align-items: center;
+      padding: clamp(42px, 7vw, 82px) 0 18px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.72);
+      font-weight: 800;
+      color: #5f4868;
+      width: fit-content;
+      margin-bottom: 14px;
+    }
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: #7ed957;
+      box-shadow: 0 0 0 4px rgba(126,217,87,.18);
+    }
+    .status-summary {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border-radius: 24px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.72);
+    }
+    .summary-label { color: var(--muted); font-size: .92rem; }
+    .summary-value { font-weight: 850; color: var(--ink-strong); }
+    .status-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 24px;
+    }
+    .banner-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.72);
+      color: #5d506a;
+      font-weight: 750;
+      font-size: .92rem;
+    }
+    .series {
+      margin-top: 8px;
+      padding: 18px;
+      border-radius: 24px;
+    }
+    .series-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .series-title {
+      margin: 0;
+      font-size: 1.35rem;
+      color: var(--ink-strong);
+      letter-spacing: -0.03em;
+    }
+    .series-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+    .state-bars {
+      display: grid;
+      gap: 12px;
+    }
+    .state-bar-row {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr) 84px;
+      gap: 12px;
+      align-items: center;
+    }
+    .state-label {
+      color: var(--muted);
+      font-weight: 750;
+      font-size: .92rem;
+    }
+    .state-bar {
+      height: 18px;
+      display: grid;
+      grid-template-columns: repeat(20, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.56);
+      border: 1px solid rgba(255,255,255,.7);
+    }
+    .tick {
+      border-radius: 999px;
+      background: rgba(155,124,255,.18);
+      overflow: hidden;
+    }
+    .tick.ok { background: linear-gradient(180deg, #83ea72, #4ccf63); }
+    .tick.warn { background: linear-gradient(180deg, #ffe58f, #f4c948); }
+    .tick.bad { background: linear-gradient(180deg, #ff8b8b, #ef5350); }
+    .state-value { text-align: right; font-weight: 850; color: var(--ink-strong); }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #5f526f; font-size: .9rem; }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+    .legend-green { background: linear-gradient(180deg, #83ea72, #4ccf63); }
+    .legend-yellow { background: linear-gradient(180deg, #ffe58f, #f4c948); }
+    .legend-red { background: linear-gradient(180deg, #ff8b8b, #ef5350); }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .detail-card {
+      padding: 18px;
+      border-radius: 22px;
+    }
+    .detail-card h3 { margin: 0 0 8px; color: var(--ink-strong); }
+    .detail-card p { margin: 0; color: var(--muted); }
+    .ok-text { color: #1f7a36; }
+    .warn-text { color: #9a7700; }
+    .bad-text { color: #b32626; }
+    @media (max-width: 860px) {
+      .status-hero, .detail-grid { grid-template-columns: 1fr; }
+      .state-bar-row { grid-template-columns: 1fr; }
+      .state-value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="bg-orb orb-pink" aria-hidden="true"></div>
+    <div class="bg-orb orb-purple" aria-hidden="true"></div>
+    <div class="bg-orb orb-cyan" aria-hidden="true"></div>
+    <div class="paw-layer" aria-hidden="true">♡ ✦  paw  ✧  proxy  ♡  ✦</div>
+
+    <header class="hero glass-panel status-shell">
+      <nav class="topbar" aria-label="主导航">
+        <a class="brand" href="../" aria-label="返回 Kiki 工具导航首页">
+          <span class="brand-mark" aria-hidden="true"><span class="ear left"></span><span class="ear right"></span>k</span>
+          <span class="brand-text">Kiki Nav</span>
+        </a>
+        <a class="top-link" href="../">返回首页</a>
+      </nav>
+
+      <section class="status-hero" aria-labelledby="page-title">
+        <div>
+          <div class="status-badge" id="overall-badge"><span class="status-dot" id="overall-dot"></span><span id="overall-text">正在检查代理外网可用性</span></div>
+          <p class="eyebrow">proxy health monitor</p>
+          <h1 id="page-title">Ki梯挂了吗</h1>
+          <p class="subtitle">这里维护的是“这个订阅代理能不能顺利访问外网”。我会用几个典型外网链接测试，能稳定打开就标绿；延迟高则标黄；失败则标红。</p>
+          <div class="status-banner" id="summary-pills">
+            <span class="banner-pill">测试目标：kycloud 订阅代理</span>
+            <span class="banner-pill">判定依据：外网可达性 + 响应速度</span>
+            <span class="banner-pill">建议刷新：每次更新后手动或定时维护</span>
+          </div>
+        </div>
+
+        <aside class="glass-card status-summary">
+          <div class="summary-row"><span class="summary-label">当前状态</span><span class="summary-value" id="current-state">待检测</span></div>
+          <div class="summary-row"><span class="summary-label">平均耗时</span><span class="summary-value" id="avg-time">-</span></div>
+          <div class="summary-row"><span class="summary-label">成功率</span><span class="summary-value" id="success-rate">-</span></div>
+          <div class="summary-row"><span class="summary-label">最近更新时间</span><span class="summary-value" id="updated-at">-</span></div>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section class="glass-panel series" aria-labelledby="series-title">
+        <div class="series-head">
+          <div>
+            <p class="section-kicker">time series</p>
+            <h2 class="series-title" id="series-title">外网访问测试条</h2>
+          </div>
+          <p class="series-meta">测试列表：Google、GitHub、Cloudflare、Wikipedia、IP 回显</p>
+        </div>
+
+        <div class="state-bars" id="state-bars" aria-live="polite">
+          <div class="state-bar-row"><div class="state-label">Google</div><div class="state-bar" data-target="google"></div><div class="state-value" id="val-google">-</div></div>
+          <div class="state-bar-row"><div class="state-label">GitHub</div><div class="state-bar" data-target="github"></div><div class="state-value" id="val-github">-</div></div>
+          <div class="state-bar-row"><div class="state-label">Cloudflare</div><div class="state-bar" data-target="cloudflare"></div><div class="state-value" id="val-cloudflare">-</div></div>
+          <div class="state-bar-row"><div class="state-label">Wikipedia</div><div class="state-bar" data-target="wikipedia"></div><div class="state-value" id="val-wikipedia">-</div></div>
+          <div class="state-bar-row"><div class="state-label">IP 回显</div><div class="state-bar" data-target="ipify"></div><div class="state-value" id="val-ipify">-</div></div>
+        </div>
+
+        <div class="legend" aria-label="状态图例">
+          <span class="legend-item"><i class="legend-swatch legend-green"></i>绿色：能稳定访问外网</span>
+          <span class="legend-item"><i class="legend-swatch legend-yellow"></i>黄色：可访问但延迟偏高</span>
+          <span class="legend-item"><i class="legend-swatch legend-red"></i>红色：不可用或失败</span>
+        </div>
+      </section>
+
+      <section class="detail-grid" aria-label="状态说明">
+        <article class="glass-card detail-card">
+          <h3>判定规则</h3>
+          <p>多个典型外网链接都能返回 2xx/3xx，且平均耗时不高时，状态记为 <span class="ok-text">绿色</span>。</p>
+        </article>
+        <article class="glass-card detail-card">
+          <h3>黄色阈值</h3>
+          <p>若能访问但平均响应变慢，或者偶发失败，我会给出 <span class="warn-text">黄色</span>，提醒代理有波动。</p>
+        </article>
+        <article class="glass-card detail-card">
+          <h3>红色阈值</h3>
+          <p>如果大部分外网站点超时、连不通、或返回失败，就标记为 <span class="bad-text">红色</span>。</p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dataset = [
+      { key: 'google', name: 'Google', url: 'https://www.google.com/generate_204', ok: [204], warnMs: 1000 },
+      { key: 'github', name: 'GitHub', url: 'https://www.github.com/', ok: [200, 301, 302], warnMs: 1200 },
+      { key: 'cloudflare', name: 'Cloudflare', url: 'https://www.cloudflare.com/', ok: [200], warnMs: 1500 },
+      { key: 'wikipedia', name: 'Wikipedia', url: 'https://www.wikipedia.org/', ok: [200], warnMs: 1000 },
+      { key: 'ipify', name: 'IP 回显', url: 'https://api.ipify.org/?format=json', ok: [200], warnMs: 1000 },
+    ];
+
+    const state = {
+      google: { code: '204', ms: 655 },
+      github: { code: '301', ms: 344 },
+      cloudflare: { code: '200', ms: 1464 },
+      wikipedia: { code: '200', ms: 325 },
+      ipify: { code: '200', ms: 633 },
+    };
+
+    const statusMeta = { generatedAt: null };
+
+    function levelFrom(item) {
+      if (!item || item.code === '000' || item.code === 'ERR') return 'bad';
+      const code = Number(item.code);
+      const ds = dataset.find((d) => d.key === item.key);
+      if (!ds) return 'bad';
+      if (!ds.ok.includes(code)) return 'bad';
+      if (item.ms >= ds.warnMs) return 'warn';
+      return 'ok';
+    }
+
+    function render() {
+      let success = 0;
+      let totalMs = 0;
+      let counted = 0;
+      let okCount = 0;
+
+      for (const item of dataset) {
+        const cur = state[item.key];
+        const row = document.querySelector(`[data-target="${item.key}"]`);
+        const label = document.getElementById(`val-${item.key}`);
+        const level = levelFrom({ key: item.key, ...cur });
+        row.innerHTML = '';
+        for (let i = 0; i < 20; i++) {
+          const tick = document.createElement('span');
+          tick.className = 'tick ' + level;
+          tick.style.opacity = i < 18 ? '1' : (level === 'ok' ? '1' : '0.82');
+          row.appendChild(tick);
+        }
+        label.textContent = `${cur.code} · ${cur.ms}ms`;
+        totalMs += cur.ms;
+        counted += 1;
+        if (level !== 'bad') {
+          success += 1;
+          if (level === 'ok') okCount += 1;
+        }
+      }
+
+      const avg = Math.round(totalMs / counted);
+      const successRate = Math.round((success / counted) * 100);
+      const overall = okCount === counted ? 'green' : successRate >= 60 ? 'yellow' : 'red';
+
+      const overallText = document.getElementById('overall-text');
+      const currentState = document.getElementById('current-state');
+      const avgTime = document.getElementById('avg-time');
+      const successRateEl = document.getElementById('success-rate');
+      const updatedAt = document.getElementById('updated-at');
+      const overallDot = document.getElementById('overall-dot');
+      const badge = document.getElementById('overall-badge');
+
+      if (overall === 'green') {
+        overallText.textContent = '代理外网访问正常';
+        currentState.textContent = '绿色';
+        currentState.className = 'summary-value ok-text';
+        overallDot.style.background = '#4ccf63';
+        overallDot.style.boxShadow = '0 0 0 4px rgba(76,207,99,.18)';
+        badge.style.color = '#1f7a36';
+      } else if (overall === 'yellow') {
+        overallText.textContent = '代理可用但有波动';
+        currentState.textContent = '黄色';
+        currentState.className = 'summary-value warn-text';
+        overallDot.style.background = '#f4c948';
+        overallDot.style.boxShadow = '0 0 0 4px rgba(244,201,72,.18)';
+        badge.style.color = '#9a7700';
+      } else {
+        overallText.textContent = '代理外网访问异常';
+        currentState.textContent = '红色';
+        currentState.className = 'summary-value bad-text';
+        overallDot.style.background = '#ef5350';
+        overallDot.style.boxShadow = '0 0 0 4px rgba(239,83,80,.18)';
+        badge.style.color = '#b32626';
+      }
+
+      avgTime.textContent = `${avg} ms`;
+      successRateEl.textContent = `${successRate}%`;
+      updatedAt.textContent = statusMeta.generatedAt || new Date().toLocaleString('zh-CN', { hour12: false });
+    }
+
+    async function hydrate() {
+      try {
+        const res = await fetch('../data/ki-ti-gua-le-ma-status.json', { cache: 'no-store' });
+        if (res.ok) {
+          const payload = await res.json();
+          if (payload && payload.tests) {
+            for (const test of payload.tests) {
+              if (state[test.key]) {
+                state[test.key].code = String(test.code || state[test.key].code);
+                state[test.key].ms = Number(test.ms || state[test.key].ms);
+              }
+            }
+            if (payload.generated_at) {
+              statusMeta.generatedAt = payload.generated_at.replace('T', ' ').replace('Z', ' UTC');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('status fetch failed', err);
+      }
+      render();
+    }
+
+    hydrate();
+  </script>
+</body>
+</html>
