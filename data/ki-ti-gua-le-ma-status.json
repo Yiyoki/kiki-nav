@@ -4,43 +4,43 @@
   "proxy": "http://127.0.0.1:7890",
   "tests": [
     {
-      "ok": true,
-      "code": "204",
-      "ms": 572,
-      "seconds": "0.558696",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 5015,
+      "seconds": "5.004184",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.gstatic.com:443",
       "key": "google",
       "name": "Google",
       "url": "https://www.gstatic.com/generate_204",
-      "level": "green"
+      "level": "red"
     },
     {
-      "ok": true,
-      "code": "301",
-      "ms": 315,
-      "seconds": "0.302059",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 5014,
+      "seconds": "5.003880",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.github.com:443",
       "key": "github",
       "name": "GitHub",
       "url": "https://www.github.com/",
-      "level": "green"
+      "level": "red"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 1076,
-      "seconds": "1.065387",
+      "ms": 1636,
+      "seconds": "1.625413",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
       "url": "https://www.cloudflare.com/",
-      "level": "green"
+      "level": "yellow"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 734,
-      "seconds": "0.723978",
+      "ms": 465,
+      "seconds": "0.450819",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -50,8 +50,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 476,
-      "seconds": "0.465977",
+      "ms": 714,
+      "seconds": "0.683872",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
@@ -59,13 +59,13 @@
       "level": "green"
     }
   ],
-  "generated_at": "2026-06-10 15:20:20 北京时间",
-  "overall": "green",
+  "generated_at": "2026-06-10 15:30:36 北京时间",
+  "overall": "yellow",
   "summary": {
-    "success_count": 5,
+    "success_count": 3,
     "total_count": 5,
-    "required_success_count": 4,
+    "required_success_count": 2,
     "required_total_count": 4,
-    "avg_ms": 635
+    "avg_ms": 2569
   }
 }
