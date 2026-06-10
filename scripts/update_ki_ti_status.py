@@ -5,9 +5,11 @@ import json
 import time
 
 SUB_PATH = Path('/opt/clash/subscription.txt')
-PROXY = 'http://127.0.0.1:7892'
+# 7890 是 mihomo 的常规 HTTP mixed-port；7892 在当前配置下对
+# www.google.com/generate_204 偶发/持续出现 SSL_ERROR_SYSCALL。
+PROXY = 'http://127.0.0.1:7890'
 TESTS = [
-    ('google', 'Google', 'https://www.google.com/generate_204', [204], 1000),
+    ('google', 'Google', 'https://www.gstatic.com/generate_204', [204], 1000),
     ('github', 'GitHub', 'https://www.github.com/', [200, 301, 302], 1200),
     ('cloudflare', 'Cloudflare', 'https://www.cloudflare.com/', [200], 1500),
     ('wikipedia', 'Wikipedia', 'https://www.wikipedia.org/', [200], 1000),
@@ -27,7 +29,7 @@ def probe(url):
     best = None
     for attempt in range(2):
         cmd = [
-            'curl', '-sS', '--max-time', '15',
+            'curl', '-sS', '--max-time', '8',
             '-x', PROXY,
             '-A', 'Mozilla/5.0',
             '-o', '/tmp/ki-ti-gua-le-ma.out',
@@ -84,10 +86,16 @@ def main():
         result.update({'key': key, 'name': name, 'url': url, 'level': level(result['code'], result['ms'], ok_codes, warn_ms)})
         report['tests'].append(result)
     success = sum(1 for x in report['tests'] if x['level'] != 'red')
-    report['overall'] = 'green' if success == len(report['tests']) and all(x['level'] == 'green' for x in report['tests']) else ('yellow' if success >= 3 else 'red')
+    required = {x['key'] for x in report['tests'] if x['key'] != 'wikipedia'}
+    required_success = sum(1 for x in report['tests'] if x['key'] in required and x['level'] != 'red')
+    # Wikipedia 对部分节点/出口偶发 TLS reset，不能代表代理整体挂掉；
+    # 只作为降级观测项，Google/GitHub/Cloudflare/IP 回显均可达时判为 yellow。
+    report['overall'] = 'green' if success == len(report['tests']) and all(x['level'] == 'green' for x in report['tests']) else ('yellow' if required_success == len(required) or success >= 3 else 'red')
     report['summary'] = {
         'success_count': success,
         'total_count': len(report['tests']),
+        'required_success_count': required_success,
+        'required_total_count': len(required),
         'avg_ms': round(sum(x['ms'] for x in report['tests']) / len(report['tests'])),
     }
     out = Path('/home/admin/.hermes/artifacts/kiki-nav/data/ki-ti-gua-le-ma-status.json')
