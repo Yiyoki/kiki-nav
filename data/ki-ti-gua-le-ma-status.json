@@ -6,8 +6,8 @@
     {
       "ok": false,
       "code": "000",
-      "ms": 129,
-      "seconds": "0.117534",
+      "ms": 134,
+      "seconds": "0.123067",
       "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.gstatic.com:443",
       "key": "google",
       "name": "Google",
@@ -15,57 +15,57 @@
       "level": "red"
     },
     {
-      "ok": true,
-      "code": "301",
-      "ms": 351,
-      "seconds": "0.340798",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 133,
+      "seconds": "0.122483",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.github.com:443",
       "key": "github",
       "name": "GitHub",
       "url": "https://www.github.com/",
-      "level": "green"
+      "level": "red"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 1238,
-      "seconds": "1.228026",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 133,
+      "seconds": "0.122155",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.cloudflare.com:443",
       "key": "cloudflare",
       "name": "Cloudflare",
       "url": "https://www.cloudflare.com/",
-      "level": "green"
+      "level": "red"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 474,
-      "seconds": "0.462936",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 133,
+      "seconds": "0.121819",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.wikipedia.org:443",
       "key": "wikipedia",
       "name": "Wikipedia",
       "url": "https://www.wikipedia.org/",
-      "level": "green"
+      "level": "red"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 956,
-      "seconds": "0.944635",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 133,
+      "seconds": "0.122205",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to api.ipify.org:443",
       "key": "ipify",
       "name": "IP回显",
       "url": "https://api.ipify.org/?format=json",
-      "level": "green"
+      "level": "red"
     }
   ],
-  "generated_at": "2026-06-10 22:20:51 北京时间",
-  "overall": "yellow",
+  "generated_at": "2026-06-10 22:31:02 北京时间",
+  "overall": "red",
   "summary": {
-    "success_count": 4,
+    "success_count": 0,
     "total_count": 5,
-    "required_success_count": 3,
+    "required_success_count": 0,
     "required_total_count": 4,
-    "avg_ms": 630
+    "avg_ms": 133
   }
 }
