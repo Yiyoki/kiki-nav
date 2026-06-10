@@ -1,24 +1,24 @@
 {
   "name": "kycloud",
   "subscription_label": "kycloud",
-  "proxy": "http://127.0.0.1:7892",
+  "proxy": "http://127.0.0.1:7890",
   "tests": [
     {
       "ok": true,
       "code": "204",
-      "ms": 674,
-      "seconds": "0.661356",
+      "ms": 636,
+      "seconds": "0.623806",
       "stderr": "",
       "key": "google",
       "name": "Google",
-      "url": "https://www.google.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204",
       "level": "green"
     },
     {
       "ok": true,
       "code": "301",
-      "ms": 1044,
-      "seconds": "1.032535",
+      "ms": 330,
+      "seconds": "0.320722",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -28,8 +28,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 1417,
-      "seconds": "1.404884",
+      "ms": 1319,
+      "seconds": "1.309175",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,19 +39,19 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 1726,
-      "seconds": "1.713641",
+      "ms": 394,
+      "seconds": "0.383303",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
       "url": "https://www.wikipedia.org/",
-      "level": "yellow"
+      "level": "green"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 614,
-      "seconds": "0.602833",
+      "ms": 568,
+      "seconds": "0.557954",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
@@ -59,11 +59,13 @@
       "level": "green"
     }
   ],
-  "generated_at": "2026-06-10 08:31:05 北京时间",
-  "overall": "yellow",
+  "generated_at": "2026-06-10 08:39:37 北京时间",
+  "overall": "green",
   "summary": {
     "success_count": 5,
     "total_count": 5,
-    "avg_ms": 1095
+    "required_success_count": 4,
+    "required_total_count": 4,
+    "avg_ms": 649
   }
 }
