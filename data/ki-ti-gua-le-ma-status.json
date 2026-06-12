@@ -6,19 +6,19 @@
     {
       "ok": true,
       "code": "204",
-      "ms": 786,
-      "seconds": "0.773392",
+      "ms": 1227,
+      "seconds": "1.214919",
       "stderr": "",
       "key": "google",
       "name": "Google",
       "url": "https://www.gstatic.com/generate_204",
-      "level": "green"
+      "level": "yellow"
     },
     {
       "ok": true,
       "code": "301",
-      "ms": 463,
-      "seconds": "0.452682",
+      "ms": 408,
+      "seconds": "0.397463",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -28,8 +28,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 1326,
-      "seconds": "1.315768",
+      "ms": 1211,
+      "seconds": "1.200310",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,8 +39,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 598,
-      "seconds": "0.586978",
+      "ms": 538,
+      "seconds": "0.528424",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -50,22 +50,22 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 2672,
-      "seconds": "2.661789",
+      "ms": 548,
+      "seconds": "0.537026",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
       "url": "https://api.ipify.org/?format=json",
-      "level": "yellow"
+      "level": "green"
     }
   ],
-  "generated_at": "2026-06-12 10:20:16 北京时间",
+  "generated_at": "2026-06-12 10:30:39 北京时间",
   "overall": "yellow",
   "summary": {
     "success_count": 5,
     "total_count": 5,
     "required_success_count": 4,
     "required_total_count": 4,
-    "avg_ms": 1169
+    "avg_ms": 786
   }
 }
