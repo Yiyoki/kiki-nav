@@ -157,6 +157,55 @@
     }
     .detail-card h3 { margin: 0 0 8px; color: var(--ink-strong); }
     .detail-card p { margin: 0; color: var(--muted); }
+    .subscription-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .subscription-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.72);
+    }
+    .subscription-name {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink-strong);
+      font-weight: 850;
+    }
+    .subscription-url {
+      display: block;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9rem;
+      overflow-wrap: anywhere;
+    }
+    .subscription-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(155,124,255,.9), rgba(255,129,189,.86));
+      color: #fff;
+      text-decoration: none;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(155,124,255,.18);
+      white-space: nowrap;
+    }
+    .subscription-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
     .ok-text { color: #1f7a36; }
     .warn-text { color: #9a7700; }
     .bad-text { color: #b32626; }
@@ -164,6 +213,8 @@
       .status-hero, .detail-grid { grid-template-columns: 1fr; }
       .state-bar-row { grid-template-columns: 1fr; }
       .state-value { text-align: left; }
+      .subscription-item { grid-template-columns: 1fr; }
+      .subscription-action { width: fit-content; }
     }
   </style>
 </head>
@@ -226,6 +277,27 @@
           <span class="legend-item"><i class="legend-swatch legend-yellow"></i>黄色：可访问但延迟偏高</span>
           <span class="legend-item"><i class="legend-swatch legend-red"></i>红色：不可用或失败</span>
         </div>
+      </section>
+
+      <section class="glass-panel series" aria-labelledby="subscription-title">
+        <div class="series-head">
+          <div>
+            <p class="section-kicker">free subscription</p>
+            <h2 class="series-title" id="subscription-title">免费订阅链接</h2>
+          </div>
+          <p class="series-meta">收集可公开访问的免费订阅，后续有新链接会继续补在这里。</p>
+        </div>
+
+        <ul class="subscription-list">
+          <li class="subscription-item">
+            <div>
+              <strong class="subscription-name">FSList YAML</strong>
+              <span class="subscription-url">https://234.qzz.io/fsllistyaml</span>
+            </div>
+            <a class="subscription-action" href="https://234.qzz.io/fsllistyaml" target="_blank" rel="noopener noreferrer">打开订阅</a>
+          </li>
+        </ul>
+        <p class="subscription-note">提示：免费订阅可用性可能波动，请以实际客户端拉取结果为准。</p>
       </section>
 
       <section class="detail-grid" aria-label="状态说明">
