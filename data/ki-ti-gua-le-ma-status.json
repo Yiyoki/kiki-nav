@@ -6,8 +6,8 @@
     {
       "ok": true,
       "code": "204",
-      "ms": 629,
-      "seconds": "0.615265",
+      "ms": 632,
+      "seconds": "0.616797",
       "stderr": "",
       "key": "google",
       "name": "Google",
@@ -17,8 +17,8 @@
     {
       "ok": true,
       "code": "301",
-      "ms": 419,
-      "seconds": "0.407516",
+      "ms": 421,
+      "seconds": "0.406404",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -28,8 +28,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 1151,
-      "seconds": "1.139330",
+      "ms": 1134,
+      "seconds": "1.119739",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,8 +39,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 540,
-      "seconds": "0.529053",
+      "ms": 521,
+      "seconds": "0.509162",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -50,8 +50,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 563,
-      "seconds": "0.551840",
+      "ms": 559,
+      "seconds": "0.547852",
       "stderr": "",
       "key": "ipify",
       "name": "IP回显",
@@ -59,13 +59,13 @@
       "level": "green"
     }
   ],
-  "generated_at": "2026-06-13 23:10:35 北京时间",
+  "generated_at": "2026-06-13 23:20:48 北京时间",
   "overall": "green",
   "summary": {
     "success_count": 5,
     "total_count": 5,
     "required_success_count": 4,
     "required_total_count": 4,
-    "avg_ms": 660
+    "avg_ms": 653
   }
 }
