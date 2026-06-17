@@ -7,7 +7,7 @@
       "ok": false,
       "code": "000",
       "ms": 5016,
-      "seconds": "5.004184",
+      "seconds": "5.005136",
       "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.gstatic.com:443",
       "key": "google",
       "name": "Google",
@@ -15,21 +15,21 @@
       "level": "red"
     },
     {
-      "ok": true,
-      "code": "301",
-      "ms": 283,
-      "seconds": "0.270204",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 5017,
+      "seconds": "5.004010",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.github.com:443",
       "key": "github",
       "name": "GitHub",
       "url": "https://www.github.com/",
-      "level": "green"
+      "level": "red"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 1780,
-      "seconds": "1.768985",
+      "ms": 1696,
+      "seconds": "1.685503",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -37,35 +37,35 @@
       "level": "yellow"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 546,
-      "seconds": "0.534452",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 5016,
+      "seconds": "5.003959",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.wikipedia.org:443",
       "key": "wikipedia",
       "name": "Wikipedia",
       "url": "https://www.wikipedia.org/",
-      "level": "green"
+      "level": "red"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 1154,
-      "seconds": "1.142343",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 4214,
+      "seconds": "4.203671",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to api.ipify.org:443",
       "key": "ipify",
       "name": "IP回显",
       "url": "https://api.ipify.org/?format=json",
-      "level": "yellow"
+      "level": "red"
     }
   ],
-  "generated_at": "2026-06-18 04:40:14 北京时间",
-  "overall": "yellow",
+  "generated_at": "2026-06-18 04:50:34 北京时间",
+  "overall": "red",
   "summary": {
-    "success_count": 4,
+    "success_count": 1,
     "total_count": 5,
-    "required_success_count": 3,
+    "required_success_count": 1,
     "required_total_count": 4,
-    "avg_ms": 1756
+    "avg_ms": 4192
   }
 }
