@@ -36,6 +36,15 @@
     "cta": "打开 OpenWebUI"
   },
   {
+    "name": "kiki小铺严选",
+    "url": "https://kistore.980822.xyz",
+    "tag": "Store",
+    "accent": "pink",
+    "emoji": "🛍️",
+    "description": "链动小铺信息收集与比价入口，集中查看严选小铺和商品信息。",
+    "cta": "进入小铺严选"
+  },
+  {
     "name": "Ki梯挂了吗",
     "url": "./pages/ki-ti-gua-le-ma.html",
     "tag": "Proxy",
