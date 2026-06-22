@@ -6,8 +6,8 @@
     {
       "ok": true,
       "code": "204",
-      "ms": 142,
-      "seconds": "0.130277",
+      "ms": 156,
+      "seconds": "0.143750",
       "stderr": "",
       "key": "google",
       "name": "Google",
@@ -17,8 +17,8 @@
     {
       "ok": true,
       "code": "301",
-      "ms": 178,
-      "seconds": "0.166430",
+      "ms": 152,
+      "seconds": "0.141682",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -28,8 +28,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 2181,
-      "seconds": "2.171193",
+      "ms": 1923,
+      "seconds": "1.912792",
       "stderr": "",
       "key": "cloudflare",
       "name": "Cloudflare",
@@ -39,8 +39,8 @@
     {
       "ok": true,
       "code": "200",
-      "ms": 605,
-      "seconds": "0.595387",
+      "ms": 547,
+      "seconds": "0.536433",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -59,13 +59,13 @@
       "level": "red"
     }
   ],
-  "generated_at": "2026-06-23 03:10:46 北京时间",
+  "generated_at": "2026-06-23 03:20:01 北京时间",
   "overall": "yellow",
   "summary": {
     "success_count": 4,
     "total_count": 5,
     "required_success_count": 3,
     "required_total_count": 4,
-    "avg_ms": 1464
+    "avg_ms": 1398
   }
 }
