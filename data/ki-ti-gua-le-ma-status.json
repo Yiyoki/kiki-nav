@@ -6,8 +6,8 @@
     {
       "ok": true,
       "code": "204",
-      "ms": 148,
-      "seconds": "0.136270",
+      "ms": 168,
+      "seconds": "0.155267",
       "stderr": "",
       "key": "google",
       "name": "Google",
@@ -17,8 +17,8 @@
     {
       "ok": true,
       "code": "301",
-      "ms": 149,
-      "seconds": "0.139078",
+      "ms": 166,
+      "seconds": "0.155734",
       "stderr": "",
       "key": "github",
       "name": "GitHub",
@@ -26,21 +26,21 @@
       "level": "green"
     },
     {
-      "ok": true,
+      "ok": false,
       "code": "200",
-      "ms": 1156,
-      "seconds": "1.145760",
-      "stderr": "",
+      "ms": 8012,
+      "seconds": "8.000695",
+      "stderr": "curl: (28) Operation timed out after 8000 milliseconds with 164818 bytes received",
       "key": "cloudflare",
       "name": "Cloudflare",
       "url": "https://www.cloudflare.com/",
-      "level": "green"
+      "level": "yellow"
     },
     {
       "ok": true,
       "code": "200",
-      "ms": 616,
-      "seconds": "0.605465",
+      "ms": 712,
+      "seconds": "0.701361",
       "stderr": "",
       "key": "wikipedia",
       "name": "Wikipedia",
@@ -48,24 +48,24 @@
       "level": "green"
     },
     {
-      "ok": true,
-      "code": "200",
-      "ms": 355,
-      "seconds": "0.344431",
-      "stderr": "",
+      "ok": false,
+      "code": "000",
+      "ms": 2888,
+      "seconds": "2.877382",
+      "stderr": "curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to api.ipify.org:443",
       "key": "ipify",
       "name": "IP回显",
       "url": "https://api.ipify.org/?format=json",
-      "level": "green"
+      "level": "red"
     }
   ],
-  "generated_at": "2026-06-24 20:30:40 北京时间",
-  "overall": "green",
+  "generated_at": "2026-06-24 20:40:44 北京时间",
+  "overall": "yellow",
   "summary": {
-    "success_count": 5,
+    "success_count": 4,
     "total_count": 5,
-    "required_success_count": 4,
+    "required_success_count": 3,
     "required_total_count": 4,
-    "avg_ms": 485
+    "avg_ms": 2389
   }
 }
