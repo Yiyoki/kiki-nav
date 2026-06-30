@@ -7,6 +7,7 @@
 - kikiapi: https://kikiapi.980822.xyz
 - image 图片生成: https://kimage.980822.xyz
 - grok 搜索: https://kikigrok.980822.xyz/webui
+- KiPhoto: https://kiphoto.980822.xyz
 - OpenWebUI: https://webgpt.980822.xyz
 - Ki梯挂了吗: ./pages/ki-ti-gua-le-ma.html
 

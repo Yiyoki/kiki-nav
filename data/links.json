@@ -27,6 +27,15 @@
     "cta": "进入 Grok WebUI"
   },
   {
+    "name": "KiPhoto",
+    "url": "https://kiphoto.980822.xyz",
+    "tag": "Photo",
+    "accent": "purple",
+    "emoji": "📸",
+    "description": "随机图片浏览入口。支持普通与 NSFW/veil 源，手机端以完整显示图片为优先。",
+    "cta": "打开 KiPhoto"
+  },
+  {
     "name": "OpenWebUI",
     "url": "https://webgpt.980822.xyz",
     "tag": "Chat",
