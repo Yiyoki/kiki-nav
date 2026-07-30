@@ -32,7 +32,10 @@ class BuilderTest(unittest.TestCase):
         self.assertEqual(payload["mode"], "live")
         self.assertEqual(payload["status"], "running")
         self.assertEqual(payload["accounting_scope"], "complete")
-        self.assertEqual(payload["points"][0], {"time": "2026-07-30T03:20:34.803042Z", "profit": 0.0, "return_pct": 0.0})
+        self.assertEqual(payload["points"][0]["time"], "2026-07-30T03:20:34.803042Z")
+        self.assertEqual(payload["points"][0]["profit"], 0.0)
+        self.assertEqual(payload["points"][0]["strategy_mtm"], 0.0)
+        self.assertFalse(payload["points"][0]["mtm_valid"])
         self.assertEqual(payload["points"][-1]["time"], "2026-07-30T04:00:00Z")
         self.assertEqual(payload["points"][-1]["profit"], 0.0)
         self.assertEqual(payload["summary"], {"net_profit": 0.0, "return_pct": 0.0,

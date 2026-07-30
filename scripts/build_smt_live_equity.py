@@ -136,14 +136,37 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
 
     trades.sort(key=lambda row: row[0])
     cumulative = ZERO
-    points = [{"time": session_start, "profit": 0.0, "return_pct": 0.0}]
+    points = [{"time": session_start, "profit": 0.0, "return_pct": 0.0,
+               "realized_net": 0.0, "unrealized_mtm": 0.0, "strategy_mtm": 0.0,
+               "strategy_mtm_pct": 0.0, "mtm_valid": False}]
     for when, net, _ in trades:
         cumulative += net
         points.append({
             "time": when,
             "profit": float(round(cumulative, 8)),
             "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8)),
+            "realized_net": float(round(cumulative, 8)),
+            "unrealized_mtm": 0.0,
+            "strategy_mtm": float(round(cumulative, 8)),
+            "strategy_mtm_pct": float(round(cumulative / BASE_CAPITAL * 100, 8)),
+            "mtm_valid": False,
         })
+    realized_net = cumulative
+    unrealized_mtm = ZERO
+    mtm_note = "未提供 positionRisk 快照；未实现 MTM 暂按 0 展示"
+    if account_snapshot and account_snapshot.exists():
+        try:
+            positions = snapshot.get("positionRisk", [])
+            if isinstance(positions, dict):
+                positions = [positions]
+            matched = [p for p in positions if isinstance(p, dict)
+                       and str(p.get("symbol", "")).upper() == "BTCUSDC"
+                       and decimal(p.get("positionAmt")) != ZERO]
+            unrealized_mtm = sum((decimal(p.get("unRealizedProfit", p.get("unrealizedProfit"))) for p in matched), ZERO)
+            mtm_note = "未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓"
+        except (json.JSONDecodeError, OSError, TypeError):
+            mtm_note = "positionRisk 快照无效；未实现 MTM 暂按 0 展示"
+    strategy_mtm = realized_net + unrealized_mtm
     generated_dt = now or datetime.now(timezone.utc)
     generated = generated_dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     # Keep a liveness point even without trades so the public chart's x-axis
@@ -153,6 +176,11 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
             "time": generated,
             "profit": float(round(cumulative, 8)),
             "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8)),
+            "realized_net": float(round(realized_net if 'realized_net' in locals() else cumulative, 8)),
+            "unrealized_mtm": float(round(unrealized_mtm if 'unrealized_mtm' in locals() else 0, 8)),
+            "strategy_mtm": float(round(strategy_mtm if 'strategy_mtm' in locals() else cumulative, 8)),
+            "strategy_mtm_pct": float(round((strategy_mtm if 'strategy_mtm' in locals() else cumulative) / BASE_CAPITAL * 100, 8)),
+            "mtm_valid": bool('unrealized_mtm' in locals() and account_snapshot and account_snapshot.exists()),
         })
     scope = "partial" if partial else "complete"
     status = "stopped" if stopped else "running"
@@ -170,8 +198,7 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
             mtm_note = "未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓"
         except (json.JSONDecodeError, OSError, TypeError):
             mtm_note = "positionRisk 快照无效；未实现 MTM 暂按 0 展示"
-    realized_net = cumulative
-    strategy_mtm = realized_net + unrealized_mtm
+
     return {
         "schema_version": 2,
         "mode": "live",
@@ -189,7 +216,7 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
             "unrealized_mtm": float(round(unrealized_mtm, 8)),
             "strategy_mtm": float(round(strategy_mtm, 8)),
         },
-        "points": points[-288:],
+        "points": points[-4033:],
     }
 
 

@@ -60,7 +60,7 @@ def main() -> None:
     check("clean.unshift({ time: start, profit: 0, return_pct: 0 })" in page_text, "frontend zero-point prepend is missing")
 
     payload = json.loads(DATA.read_text(encoding="utf-8"))
-    check(payload.get("schema_version") == 1, "unsupported schema_version")
+    check(payload.get("schema_version") in {1, 2}, "unsupported schema_version")
     check(payload.get("mode") == "live", "mode must be live")
     check(payload.get("status") in {"running", "stopped"}, "invalid live status")
     initial_equity = payload.get("base_capital")
@@ -86,7 +86,14 @@ def main() -> None:
     check(times == sorted(times) and len(set(times)) == len(times), "point times must be unique and ascending")
     check(points[0]["time"] == payload["session_start"], "first point must be session_start")
     check(points[0]["profit"] == 0 and points[0]["return_pct"] == 0, "first point must be 0/0%")
-    check(payload.get("summary") == {"net_profit": points[-1]["profit"], "return_pct": points[-1]["return_pct"]}, "summary must equal last point")
+    if payload.get("schema_version") == 1:
+        check(payload.get("summary") == {"net_profit": points[-1]["profit"], "return_pct": points[-1]["return_pct"]}, "summary must equal last point")
+    else:
+        summary = payload.get("summary", {})
+        for key in ("realized_net", "unrealized_mtm", "strategy_mtm"):
+            check(isinstance(summary.get(key), (int, float)) and math.isfinite(summary[key]), f"summary missing {key}")
+        check(math.isclose(summary["net_profit"], summary["realized_net"], abs_tol=1e-8), "net_profit must equal realized_net")
+        check(math.isclose(summary["strategy_mtm"], summary["realized_net"] + summary["unrealized_mtm"], abs_tol=1e-8), "strategy_mtm formula mismatch")
 
     index_text = INDEX.read_text(encoding="utf-8")
     check('href="./btc-a0.html"' in index_text, "homepage card is missing")

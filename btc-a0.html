@@ -138,7 +138,7 @@
           </div>
           <p class="eyebrow">SMT live monitor</p>
           <h1 id="page-title">SMT小额实盘</h1>
-          <p class="subtitle">BTCUSDC 策略运行与累计净已实现收益观察。页面每 60 秒读取一次脱敏成交聚合数据。</p>
+          <p class="subtitle">BTCUSDC 策略运行与已实现、持仓未实现收益观察。页面每 60 秒读取一次脱敏聚合数据。</p>
         </div>
 
         <div class="metrics" aria-label="策略收益摘要">
@@ -179,7 +179,7 @@
         <div class="panel-head">
           <div>
             <p class="section-kicker">equity curve</p>
-            <h2 id="chart-title">累计净收益</h2>
+            <h2 id="chart-title">策略 MTM 收益曲线</h2>
           </div>
           <p class="panel-meta" id="chart-range">正在读取数据</p>
         </div>
@@ -192,7 +192,8 @@
             <div id="tooltip-return"></div>
           </div>
         </div>
-        <div class="chart-legend"><span class="legend-line" aria-hidden="true"></span><span>累计净收益（USDC）</span></div>
+        <div class="chart-legend"><span class="legend-line" aria-hidden="true"></span><span>策略 MTM（已实现 + 持仓未实现，USDC）</span></div>
+        <div class="chart-legend"><span class="legend-line" aria-hidden="true"></span><span>摘要同时列出累计净已实现收益与当前持仓未实现收益</span></div>
       </section>
 
       <section class="glass-panel method-panel" aria-labelledby="method-title">
@@ -280,7 +281,7 @@
         }
         empty.hidden = true;
 
-        const values = points.map((point) => point.profit);
+        const values = points.map((point) => Number.isFinite(point.strategy_mtm) ? point.strategy_mtm : point.profit);
         let min = Math.min(0, ...values);
         let max = Math.max(0, ...values);
         const spread = Math.max(max - min, 0.2);
@@ -304,8 +305,8 @@
         svg.append(svgEl('line', { x1: margin.left, y1: zeroY, x2: width - margin.right, y2: zeroY, stroke: 'rgba(47,38,57,.28)', 'stroke-width': 1, 'stroke-dasharray': '4 5' }));
 
         const coords = points.length === 1
-          ? [{ x: margin.left, y: y(points[0].profit), point: points[0] }, { x: width - margin.right, y: y(points[0].profit), point: points[0] }]
-          : points.map((point, index) => ({ x: x(index), y: y(point.profit), point }));
+          ? [{ x: margin.left, y: y(points[0].strategy_mtm ?? points[0].profit), point: points[0] }, { x: width - margin.right, y: y(points[0].strategy_mtm ?? points[0].profit), point: points[0] }]
+          : points.map((point, index) => ({ x: x(index), y: y(point.strategy_mtm ?? point.profit), point }));
         const linePath = coords.map((coord, index) => `${index ? 'L' : 'M'} ${coord.x} ${coord.y}`).join(' ');
         const areaPath = `${linePath} L ${coords.at(-1).x} ${zeroY} L ${coords[0].x} ${zeroY} Z`;
         const defs = svgEl('defs');
@@ -339,8 +340,8 @@
         guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('visibility', 'visible');
         marker.setAttribute('cx', x); marker.setAttribute('cy', y); marker.setAttribute('visibility', 'visible');
         document.getElementById('tooltip-time').textContent = formatTime(point.time, true);
-        document.getElementById('tooltip-profit').textContent = `${signed(point.profit)} USDC`;
-        document.getElementById('tooltip-return').textContent = `收益率 ${signed(point.return_pct, '%')}`;
+        document.getElementById('tooltip-profit').textContent = `策略 MTM ${signed(point.strategy_mtm ?? point.profit)} USDC`;
+        document.getElementById('tooltip-return').textContent = `已实现 ${signed(point.realized_net ?? point.profit)} / 未实现 ${signed(point.unrealized_mtm ?? 0)} USDC`;
         tooltip.hidden = false;
         const tooltipX = Math.min(rect.width - 76, Math.max(76, x));
         const tooltipY = y < 105 ? y + 142 : y;
