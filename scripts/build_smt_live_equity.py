@@ -133,7 +133,16 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
             "profit": float(round(cumulative, 8)),
             "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8)),
         })
-    generated = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    generated_dt = now or datetime.now(timezone.utc)
+    generated = generated_dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    # Keep a liveness point even without trades so the public chart's x-axis
+    # advances and visibly proves the monitor is still running.
+    if points[-1]["time"] != generated:
+        points.append({
+            "time": generated,
+            "profit": float(round(cumulative, 8)),
+            "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8)),
+        })
     scope = "partial" if partial else "complete"
     status = "stopped" if stopped else "running"
     return {
@@ -147,7 +156,7 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
         "generated_at": generated,
         "session_start": session_start,
         "summary": {"net_profit": float(round(cumulative, 8)), "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8))},
-        "points": points,
+        "points": points[-288:],
     }
 
 
