@@ -6,7 +6,7 @@
   "accounting_scope": "complete",
   "accounting_note": "净已实现收益（realizedPnl 减 USDC 手续费）",
   "base_capital": 99.49405209,
-  "generated_at": "2026-07-30T12:10:01.550204Z",
+  "generated_at": "2026-07-30T12:15:01.772134Z",
   "session_start": "2026-07-30T03:20:34.803042Z",
   "summary": {
     "net_profit": 0.0,
@@ -49,7 +49,17 @@
       "return_pct": 0.0
     },
     {
-      "time": "2026-07-30T12:10:01.550204Z",
+      "time": "2026-07-30T12:10:38.754000Z",
+      "profit": 0.0,
+      "return_pct": 0.0
+    },
+    {
+      "time": "2026-07-30T12:11:26.373000Z",
+      "profit": 0.0,
+      "return_pct": 0.0
+    },
+    {
+      "time": "2026-07-30T12:15:01.772134Z",
       "profit": 0.0,
       "return_pct": 0.0
     }
