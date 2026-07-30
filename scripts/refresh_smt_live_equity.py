@@ -50,9 +50,9 @@ def request(method: str, auth: str, payload=None):
 
 
 def semantic(value):
-    copy = dict(value)
-    copy.pop("generated_at", None)
-    return copy
+    # generated_at is intentionally included: the public page must show liveness
+    # even when no trade has occurred and the equity remains at zero.
+    return dict(value)
 
 
 def main() -> int:
