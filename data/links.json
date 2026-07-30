@@ -63,12 +63,12 @@
     "cta": "查看代理状态"
   },
   {
-    "name": "BTCUSDC A0 收益曲线",
+    "name": "SMT小额实盘",
     "url": "./btc-a0.html",
     "tag": "Trading",
     "accent": "cyan",
     "emoji": "📈",
-    "description": "A0 策略累计净收益与收益率观察页。实盘未启动时保持观察状态，不展示推算收益。",
-    "cta": "查看收益曲线"
+    "description": "SMT 小额实盘累计净已实现收益与收益率观察页，展示脱敏聚合成交数据。",
+    "cta": "查看实盘曲线"
   }
 ]

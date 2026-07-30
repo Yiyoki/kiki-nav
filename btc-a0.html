@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d1714" />
-  <meta name="description" content="BTCUSDC A0 策略收益观察页，展示累计收益、收益率和权益曲线。" />
-  <title>BTCUSDC A0 收益曲线 · Kiki Nav</title>
+  <meta name="description" content="SMT小额实盘收益观察页，展示累计净已实现收益与收益率。" />
+  <title>SMT小额实盘 · Kiki Nav</title>
   <link rel="stylesheet" href="assets/styles.css" />
   <style>
     :root {
@@ -136,9 +136,9 @@
             <span class="market-badge">BTCUSDC</span>
             <span class="mode-badge" id="mode-badge">占位数据</span>
           </div>
-          <p class="eyebrow">A0 strategy monitor</p>
-          <h1 id="page-title">A0 收益曲线</h1>
-          <p class="subtitle">BTCUSDC 策略运行与累计净收益观察。实盘启动后，页面将按成交数据持续更新。</p>
+          <p class="eyebrow">SMT live monitor</p>
+          <h1 id="page-title">SMT小额实盘</h1>
+          <p class="subtitle">BTCUSDC 策略运行与累计净已实现收益观察。页面每 60 秒读取一次脱敏成交聚合数据。</p>
         </div>
 
         <div class="metrics" aria-label="策略收益摘要">
@@ -187,10 +187,10 @@
         <p class="section-kicker">data definition</p>
         <h2 id="method-title">数据口径说明</h2>
         <div class="method-grid">
-          <p><strong>累计收益</strong>准确净收益待 Binance <code>userTrades</code> 成交记录采集，以已实现盈亏扣除手续费后统计。</p>
-          <p><strong>收益率</strong>累计净收益除以策略初始权益。未启动或数据未完成核验时，摘要不展示推算值。</p>
+          <p><strong>累计收益</strong>按 Binance <code>userTrades</code> 的已实现盈亏统计；USDC 手续费直接扣除，其他资产手续费不猜测换算并标记为部分口径。</p>
+          <p><strong>收益率</strong>累计净已实现收益除以初始分配资金约 99.49 USDC；曲线首点固定为 session_start 的 0 / 0%。</p>
         </div>
-        <p class="data-warning" id="data-warning">策略尚未启动，当前处于观察状态；曲线为脱敏占位数据，不代表实盘收益。</p>
+        <p class="data-warning" id="data-warning">正在读取脱敏实盘聚合数据。</p>
       </section>
     </main>
   </div>
@@ -237,11 +237,12 @@
         setTone(profitEl, summaryProfit);
         setTone(returnEl, summaryReturn);
         statusEl.textContent = placeholder ? '观察中' : (data.status_label || '运行中');
-        document.getElementById('updated-at').textContent = data.updated_at ? formatTime(data.updated_at, true) : '--';
+        const generatedAt = data.generated_at || data.updated_at;
+        document.getElementById('updated-at').textContent = generatedAt ? formatTime(generatedAt, true) : '--';
         document.getElementById('mode-badge').textContent = placeholder ? '占位数据' : '实盘数据';
         document.getElementById('data-warning').textContent = placeholder
           ? (data.disclaimer || '策略尚未启动，当前处于观察状态。')
-          : '收益依据 userTrades 成交记录统计，并扣除成交手续费；交易所数据同步可能存在短暂延迟。';
+          : (data.accounting_note || '收益依据 userTrades 成交记录统计；交易所数据同步可能存在短暂延迟。');
       }
 
       function renderChart() {
@@ -283,7 +284,9 @@
         const zeroY = y(0);
         svg.append(svgEl('line', { x1: margin.left, y1: zeroY, x2: width - margin.right, y2: zeroY, stroke: 'rgba(47,38,57,.28)', 'stroke-width': 1, 'stroke-dasharray': '4 5' }));
 
-        const coords = points.map((point, index) => ({ x: x(index), y: y(point.profit), point }));
+        const coords = points.length === 1
+          ? [{ x: margin.left, y: y(points[0].profit), point: points[0] }, { x: width - margin.right, y: y(points[0].profit), point: points[0] }]
+          : points.map((point, index) => ({ x: x(index), y: y(point.profit), point }));
         const linePath = coords.map((coord, index) => `${index ? 'L' : 'M'} ${coord.x} ${coord.y}`).join(' ');
         const areaPath = `${linePath} L ${coords.at(-1).x} ${zeroY} L ${coords[0].x} ${zeroY} Z`;
         const defs = svgEl('defs');
@@ -337,16 +340,26 @@
       wrap.addEventListener('pointercancel', hidePoint);
       window.addEventListener('resize', renderChart);
 
-      fetch('data/btc-a0-equity.json', { cache: 'no-store' })
+      function normalizePoints(data) {
+        const clean = Array.isArray(data.points) ? data.points
+          .filter((point) => point && !Number.isNaN(Date.parse(point.time)) && Number.isFinite(point.profit) && Number.isFinite(point.return_pct))
+          .sort((a, b) => Date.parse(a.time) - Date.parse(b.time)) : [];
+        const start = data.session_start;
+        if (start && !Number.isNaN(Date.parse(start)) && (!clean.length || Date.parse(clean[0].time) !== Date.parse(start) || clean[0].profit !== 0 || clean[0].return_pct !== 0)) {
+          clean.unshift({ time: start, profit: 0, return_pct: 0 });
+        }
+        return clean;
+      }
+
+      function refreshData() {
+        fetch(`data/btc-a0-equity.json?t=${Date.now()}`, { cache: 'no-store' })
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
         })
         .then((data) => {
           renderSummary(data);
-          points = Array.isArray(data.points) ? data.points
-            .filter((point) => point && !Number.isNaN(Date.parse(point.time)) && Number.isFinite(point.profit) && Number.isFinite(point.return_pct))
-            .sort((a, b) => Date.parse(a.time) - Date.parse(b.time)) : [];
+          points = normalizePoints(data);
           document.getElementById('chart-range').textContent = points.length > 1
             ? `${formatTime(points[0].time, true)} 至 ${formatTime(points.at(-1).time, true)}`
             : points.length === 1 ? formatTime(points[0].time, true) : '暂无数据';
@@ -356,8 +369,11 @@
           console.warn('equity data fetch failed', error);
           document.getElementById('chart-range').textContent = '数据暂不可用';
           document.getElementById('data-warning').textContent = '收益数据读取失败，当前保持观察状态，请稍后刷新。';
-          renderChart();
+          if (!points.length) renderChart();
         });
+      }
+      refreshData();
+      window.setInterval(refreshData, 60_000);
     })();
   </script>
 </body>

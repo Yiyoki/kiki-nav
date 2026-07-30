@@ -55,20 +55,22 @@ def main() -> None:
     check("assets/styles.css" in parser.references, "shared stylesheet is not referenced")
     check("data/btc-a0-equity.json" in page_text, "equity data file is not fetched")
     check("userTrades" in page_text, "userTrades accounting note is missing")
-    check("观察中" in page_text, "watching state is missing")
+    check("SMT小额实盘" in page_text, "page title is missing")
+    check("window.setInterval(refreshData, 60_000)" in page_text, "60-second polling is missing")
+    check("clean.unshift({ time: start, profit: 0, return_pct: 0 })" in page_text, "frontend zero-point prepend is missing")
 
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     check(payload.get("schema_version") == 1, "unsupported schema_version")
-    check(payload.get("symbol") == "BTCUSDC", "symbol must be BTCUSDC")
-    check(payload.get("strategy") == "A0", "strategy must be A0")
-    check(payload.get("mode") in {"placeholder", "live"}, "invalid mode")
-    check(payload.get("status") == "watching", "initial status must be watching")
-    initial_equity = payload.get("initial_equity")
-    check(isinstance(initial_equity, (int, float)) and initial_equity > 0, "initial_equity must be positive")
-    check(parse_time(payload["updated_at"]) is not None, "invalid updated_at")
+    check(payload.get("mode") == "live", "mode must be live")
+    check(payload.get("status") in {"running", "stopped"}, "invalid live status")
+    initial_equity = payload.get("base_capital")
+    check(math.isclose(initial_equity, 99.49405209), "base_capital mismatch")
+    check(parse_time(payload["generated_at"]) is not None, "invalid generated_at")
+    check(parse_time(payload["session_start"]) is not None, "invalid session_start")
+    check(payload.get("accounting_scope") in {"complete", "partial"}, "invalid accounting scope")
 
     points = payload.get("points")
-    check(isinstance(points, list) and len(points) >= 3, "at least three chart points are required")
+    check(isinstance(points, list) and len(points) >= 1, "at least one chart point is required")
     times: list[datetime] = []
     profits: list[float] = []
     for index, point in enumerate(points):
@@ -82,19 +84,20 @@ def main() -> None:
         check(math.isclose(return_pct, expected, abs_tol=0.0001), f"point {index} return_pct is inconsistent")
         profits.append(float(profit))
     check(times == sorted(times) and len(set(times)) == len(times), "point times must be unique and ascending")
-    check(min(profits) < 0 < max(profits), "placeholder chart must demonstrate up/down movement")
-    if payload["mode"] == "placeholder":
-        check(payload.get("summary") == {"net_profit": None, "return_pct": None}, "placeholder summary must not claim live returns")
+    check(points[0]["time"] == payload["session_start"], "first point must be session_start")
+    check(points[0]["profit"] == 0 and points[0]["return_pct"] == 0, "first point must be 0/0%")
+    check(payload.get("summary") == {"net_profit": points[-1]["profit"], "return_pct": points[-1]["return_pct"]}, "summary must equal last point")
 
     index_text = INDEX.read_text(encoding="utf-8")
     check('href="./btc-a0.html"' in index_text, "homepage card is missing")
     links = json.loads(LINKS.read_text(encoding="utf-8"))
     matches = [item for item in links if item.get("url") == "./btc-a0.html"]
     check(len(matches) == 1, "links.json must contain exactly one BTC A0 entry")
-    check(matches[0].get("name") == "BTCUSDC A0 收益曲线", "links.json BTC A0 name mismatch")
+    check(matches[0].get("name") == "SMT小额实盘", "links.json title mismatch")
+    check("SMT小额实盘" in index_text, "homepage title mismatch")
 
     print(f"PASS HTML: {PAGE.relative_to(ROOT)} ({len(parser.ids)} ids)")
-    print(f"PASS DATA: {DATA.relative_to(ROOT)} ({len(points)} points, ascending timestamps, signed movement)")
+    print(f"PASS DATA: {DATA.relative_to(ROOT)} ({len(points)} points, live schema and zero origin)")
     print("PASS LINKS: homepage card and data/links.json entry are consistent")
 
 
