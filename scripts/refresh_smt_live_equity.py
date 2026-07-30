@@ -23,6 +23,13 @@ API = "https://api.github.com/repos/Yiyoki/kiki-nav/contents/data/btc-a0-equity.
 
 def token() -> str:
     # Credentials remain in private files; never log their contents.
+    dedicated = ROOT / "github.token"
+    try:
+        value = dedicated.read_text(encoding="utf-8").strip()
+        if value:
+            return value
+    except (OSError, UnicodeError):
+        pass
     for filename in (Path("/opt/keys.md"), Path("/opt/key.txt")):
         try:
             text = filename.read_text(encoding="utf-8")
