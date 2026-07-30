@@ -1,16 +1,19 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "mode": "live",
   "status": "running",
   "status_label": "运行中",
   "accounting_scope": "complete",
-  "accounting_note": "净已实现收益（realizedPnl 减 USDC 手续费）",
+  "accounting_note": "净已实现收益（realizedPnl 减 USDC 手续费）；未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓",
   "base_capital": 99.49405209,
-  "generated_at": "2026-07-30T13:15:01.290105Z",
+  "generated_at": "2026-07-30T13:16:06.027588Z",
   "session_start": "2026-07-30T03:20:34.803042Z",
   "summary": {
-    "net_profit": 0.0,
-    "return_pct": 0.0
+    "net_profit": -0.61109999,
+    "return_pct": -0.61420756,
+    "realized_net": -0.61109999,
+    "unrealized_mtm": 0.0,
+    "strategy_mtm": -0.61109999
   },
   "points": [
     {
@@ -34,34 +37,74 @@
       "return_pct": 0.0
     },
     {
+      "time": "2026-07-30T09:40:17.866000Z",
+      "profit": -0.1503,
+      "return_pct": -0.15106431
+    },
+    {
       "time": "2026-07-30T09:41:54.799000Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "profit": -0.1503,
+      "return_pct": -0.15106431
+    },
+    {
+      "time": "2026-07-30T10:16:47.473000Z",
+      "profit": -0.27043333,
+      "return_pct": -0.27180854
+    },
+    {
+      "time": "2026-07-30T10:26:15.468000Z",
+      "profit": -0.41296666,
+      "return_pct": -0.41506668
+    },
+    {
+      "time": "2026-07-30T10:42:05.626000Z",
+      "profit": -0.51759999,
+      "return_pct": -0.52023209
     },
     {
       "time": "2026-07-30T11:41:01.769000Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "profit": -0.51759999,
+      "return_pct": -0.52023209
+    },
+    {
+      "time": "2026-07-30T12:00:50.186000Z",
+      "profit": -0.64599999,
+      "return_pct": -0.64928503
     },
     {
       "time": "2026-07-30T12:02:22.138000Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "profit": -0.64599999,
+      "return_pct": -0.64928503
     },
     {
       "time": "2026-07-30T12:10:38.754000Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "profit": -0.64599999,
+      "return_pct": -0.64928503
     },
     {
       "time": "2026-07-30T12:11:26.373000Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "profit": -0.64599999,
+      "return_pct": -0.64928503
     },
     {
-      "time": "2026-07-30T13:15:01.290105Z",
-      "profit": 0.0,
-      "return_pct": 0.0
+      "time": "2026-07-30T13:02:38.143000Z",
+      "profit": -0.66769999,
+      "return_pct": -0.67109538
+    },
+    {
+      "time": "2026-07-30T13:10:55.210000Z",
+      "profit": -0.64569999,
+      "return_pct": -0.64898351
+    },
+    {
+      "time": "2026-07-30T13:11:50.423000Z",
+      "profit": -0.61109999,
+      "return_pct": -0.61420756
+    },
+    {
+      "time": "2026-07-30T13:16:06.027588Z",
+      "profit": -0.61109999,
+      "return_pct": -0.61420756
     }
   ]
 }
