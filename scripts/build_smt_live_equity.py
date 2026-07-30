@@ -76,7 +76,8 @@ def dedup_key(trade: dict[str, Any]) -> str:
     return "anon:" + hashlib.sha256(json.dumps(clean, sort_keys=True, default=str).encode()).hexdigest()
 
 
-def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = None) -> dict[str, Any]:
+def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = None,
+          account_snapshot: Path | None = None) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
     for raw in jsonl.read_text(encoding="utf-8").splitlines():
         if not raw.strip():
@@ -92,6 +93,15 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
     if not session_start:
         raise ValueError("JSONL contains no usable session_start timestamp")
 
+    snapshot: dict[str, Any] = {}
+    if account_snapshot and account_snapshot.exists():
+        try:
+            value = json.loads(account_snapshot.read_text(encoding="utf-8"))
+            if isinstance(value, dict):
+                snapshot = value
+        except (json.JSONDecodeError, OSError):
+            pass
+
     stopped = any(str(e.get("type", e.get("event_type", ""))).lower() in END_TYPES for e in events)
     if heartbeat and heartbeat.exists():
         try:
@@ -106,14 +116,15 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
     seen: set[str] = set()
     trades: list[tuple[str, Decimal, bool]] = []
     partial = False
-    for event in events:
+    trade_events = events + ([{"userTrades": snapshot.get("userTrades", [])}] if snapshot else [])
+    for event in trade_events:
         for trade, inherited_time in trade_groups(event):
             key = dedup_key(trade)
             if key in seen:
                 continue
             seen.add(key)
             when = event_time(trade, inherited_time)
-            if not when:
+            if not when or when < session_start:
                 continue
             pnl = decimal(trade.get("realizedPnl", trade.get("realized_pnl")))
             commission = decimal(trade.get("commission"))
@@ -145,17 +156,39 @@ def build(jsonl: Path, heartbeat: Path | None = None, now: datetime | None = Non
         })
     scope = "partial" if partial else "complete"
     status = "stopped" if stopped else "running"
+    unrealized_mtm = ZERO
+    mtm_note = "未提供 positionRisk 快照；未实现 MTM 暂按 0 展示"
+    if account_snapshot and account_snapshot.exists():
+        try:
+            positions = snapshot.get("positionRisk", [])
+            if isinstance(positions, dict):
+                positions = [positions]
+            matched = [p for p in positions if isinstance(p, dict)
+                       and str(p.get("symbol", "")).upper() == "BTCUSDC"
+                       and decimal(p.get("positionAmt")) != ZERO]
+            unrealized_mtm = sum((decimal(p.get("unRealizedProfit", p.get("unrealizedProfit"))) for p in matched), ZERO)
+            mtm_note = "未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓"
+        except (json.JSONDecodeError, OSError, TypeError):
+            mtm_note = "positionRisk 快照无效；未实现 MTM 暂按 0 展示"
+    realized_net = cumulative
+    strategy_mtm = realized_net + unrealized_mtm
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "mode": "live",
         "status": status,
         "status_label": "已停止" if stopped else "运行中",
         "accounting_scope": scope,
-        "accounting_note": ("净已实现收益；非 USDC 手续费未换算、未扣除" if partial else "净已实现收益（realizedPnl 减 USDC 手续费）"),
+        "accounting_note": ("净已实现收益；非 USDC 手续费未换算、未扣除" if partial else "净已实现收益（realizedPnl 减 USDC 手续费）") + "；" + mtm_note,
         "base_capital": float(BASE_CAPITAL),
         "generated_at": generated,
         "session_start": session_start,
-        "summary": {"net_profit": float(round(cumulative, 8)), "return_pct": float(round(cumulative / BASE_CAPITAL * 100, 8))},
+        "summary": {
+            "net_profit": float(round(realized_net, 8)),
+            "return_pct": float(round(realized_net / BASE_CAPITAL * 100, 8)),
+            "realized_net": float(round(realized_net, 8)),
+            "unrealized_mtm": float(round(unrealized_mtm, 8)),
+            "strategy_mtm": float(round(strategy_mtm, 8)),
+        },
         "points": points[-288:],
     }
 
@@ -164,9 +197,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("jsonl", type=Path)
     parser.add_argument("--heartbeat", type=Path)
+    parser.add_argument("--account-snapshot", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    payload = build(args.jsonl, args.heartbeat)
+    payload = build(args.jsonl, args.heartbeat, account_snapshot=args.account_snapshot)
     text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

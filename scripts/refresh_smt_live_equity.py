@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import hmac
 import json
 import os
 import re
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
+import time
 from pathlib import Path
 
 ROOT = Path("/opt/smt-live-equity")
@@ -18,7 +22,39 @@ JSONL = SESSION / "phase_b_v2_20260730T032031Z.jsonl"
 HEARTBEAT = SESSION / "heartbeat.json"
 OUTPUT = ROOT / "btc-a0-equity.json"
 STATE = ROOT / "published.json"
+ACCOUNT_SNAPSHOT = ROOT / "account-snapshot.json"
 API = "https://api.github.com/repos/Yiyoki/kiki-nav/contents/data/btc-a0-equity.json"
+BINANCE = "https://fapi.binance.com"
+KEYS = Path("/opt/keys.md")
+
+
+def trading_key(name: str) -> str:
+    for line in KEYS.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if line.strip().lower().startswith(name.lower() + ":"):
+            return line.split(":", 1)[1].strip()
+    raise RuntimeError(f"missing private credential {name}")
+
+
+def signed_get(path: str, params=None):
+    """Binance read-only signed GET; this refresher implements no write method."""
+    params = dict(params or {})
+    params.update({"timestamp": int(time.time() * 1000), "recvWindow": 60000})
+    query = urllib.parse.urlencode(params)
+    query += "&signature=" + hmac.new(trading_key("binance-secret-key").encode(), query.encode(), hashlib.sha256).hexdigest()
+    req = urllib.request.Request(BINANCE + path + "?" + query,
+        headers={"X-MBX-APIKEY": trading_key("binance-api-key"), "User-Agent": "smt-mtm-readonly/1.0"}, method="GET")
+    with urllib.request.urlopen(req, timeout=30) as response:
+        return json.load(response)
+
+
+def refresh_account_snapshot():
+    payload = {
+        "generated_at_ms": int(time.time() * 1000),
+        "userTrades": signed_get("/fapi/v1/userTrades", {"symbol": "BTCUSDC", "limit": 1000}),
+        "positionRisk": signed_get("/fapi/v2/positionRisk", {"symbol": "BTCUSDC"}),
+    }
+    ACCOUNT_SNAPSHOT.write_text(json.dumps(payload, ensure_ascii=False) + "\n", encoding="utf-8")
+    os.chmod(ACCOUNT_SNAPSHOT, 0o600)
 
 
 def token() -> str:
@@ -56,7 +92,8 @@ def semantic(value):
 
 
 def main() -> int:
-    subprocess.run([str(ROOT / "build_smt_live_equity.py"), str(JSONL), "--heartbeat", str(HEARTBEAT), "--output", str(OUTPUT)], check=True)
+    refresh_account_snapshot()
+    subprocess.run([str(ROOT / "build_smt_live_equity.py"), str(JSONL), "--heartbeat", str(HEARTBEAT), "--account-snapshot", str(ACCOUNT_SNAPSHOT), "--output", str(OUTPUT)], check=True)
     current = json.loads(OUTPUT.read_text(encoding="utf-8"))
     if STATE.exists() and semantic(json.loads(STATE.read_text(encoding="utf-8"))) == semantic(current):
         return 0

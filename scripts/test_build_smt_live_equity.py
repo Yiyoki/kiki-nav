@@ -11,7 +11,7 @@ from build_smt_live_equity import BASE_CAPITAL, build
 
 
 class BuilderTest(unittest.TestCase):
-    def make(self, events, heartbeat=None):
+    def make(self, events, heartbeat=None, snapshot=None):
         folder = tempfile.TemporaryDirectory()
         self.addCleanup(folder.cleanup)
         root = Path(folder.name)
@@ -20,7 +20,12 @@ class BuilderTest(unittest.TestCase):
         hb = root / "heartbeat.json"
         if heartbeat is not None:
             hb.write_text(json.dumps(heartbeat), encoding="utf-8")
-        return build(source, hb if heartbeat is not None else None, datetime(2026, 7, 30, 4, tzinfo=timezone.utc))
+        account = root / "account.json"
+        if snapshot is not None:
+            account.write_text(json.dumps(snapshot), encoding="utf-8")
+        return build(source, hb if heartbeat is not None else None,
+                     datetime(2026, 7, 30, 4, tzinfo=timezone.utc),
+                     account if snapshot is not None else None)
 
     def test_current_no_trade_session_is_live_running_zero(self):
         payload = self.make([{"type": "session_start", "ts": "2026-07-30T03:20:34.803042Z"}])
@@ -30,7 +35,24 @@ class BuilderTest(unittest.TestCase):
         self.assertEqual(payload["points"][0], {"time": "2026-07-30T03:20:34.803042Z", "profit": 0.0, "return_pct": 0.0})
         self.assertEqual(payload["points"][-1]["time"], "2026-07-30T04:00:00Z")
         self.assertEqual(payload["points"][-1]["profit"], 0.0)
-        self.assertEqual(payload["summary"], {"net_profit": 0.0, "return_pct": 0.0})
+        self.assertEqual(payload["summary"], {"net_profit": 0.0, "return_pct": 0.0,
+            "realized_net": 0.0, "unrealized_mtm": 0.0, "strategy_mtm": 0.0})
+
+    def test_mtm_fields_use_only_nonzero_btcusdc_position_risk(self):
+        payload = self.make([
+            {"type": "session_start", "ts": "2026-07-30T03:20:00Z"},
+        ], snapshot={
+            "userTrades": [{"tradeId": 1, "time": 1785382200000,
+                "realizedPnl": "2.5", "commission": ".1", "commissionAsset": "USDC"}],
+            "positionRisk": [
+            {"symbol": "BTCUSDC", "positionAmt": "-0.002", "unRealizedProfit": "-0.75"},
+            {"symbol": "ETHUSDC", "positionAmt": "2", "unRealizedProfit": "99"},
+            {"symbol": "BTCUSDC", "positionAmt": "0", "unRealizedProfit": "12"},
+        ]})
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["summary"]["realized_net"], 2.4)
+        self.assertEqual(payload["summary"]["unrealized_mtm"], -0.75)
+        self.assertEqual(payload["summary"]["strategy_mtm"], 1.65)
 
     def test_historical_wrappers_dedup_and_commission_scope(self):
         events = [

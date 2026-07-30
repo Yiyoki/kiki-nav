@@ -47,7 +47,7 @@
       box-shadow: 0 0 0 4px rgba(228,170,53,.15);
     }
     .mode-badge { color: #765e18; background: rgba(255,244,199,.78); }
-    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
     .metric {
       min-width: 0;
       padding: 15px;
@@ -143,6 +143,18 @@
 
         <div class="metrics" aria-label="策略收益摘要">
           <div class="metric">
+            <span class="metric-label">已实现净收益 USDC</span>
+            <strong class="metric-value" id="realized-net">--</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">未实现 MTM USDC</span>
+            <strong class="metric-value" id="unrealized-mtm">--</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">策略 MTM USDC</span>
+            <strong class="metric-value" id="strategy-mtm">--</strong>
+          </div>
+          <div class="metric">
             <span class="metric-label">累计收益 USDC</span>
             <strong class="metric-value" id="net-profit">--</strong>
           </div>
@@ -231,6 +243,13 @@
         const statusEl = document.getElementById('current-status');
         const summaryProfit = data.summary && Number.isFinite(data.summary.net_profit) ? data.summary.net_profit : null;
         const summaryReturn = data.summary && Number.isFinite(data.summary.return_pct) ? data.summary.return_pct : null;
+
+        ['realized_net', 'unrealized_mtm', 'strategy_mtm'].forEach((key) => {
+          const el = document.getElementById(key.replaceAll('_', '-'));
+          const value = data.summary && Number.isFinite(data.summary[key]) ? data.summary[key] : null;
+          el.textContent = placeholder || value === null ? '--' : signed(value);
+          setTone(el, value);
+        });
 
         profitEl.textContent = placeholder || summaryProfit === null ? '--' : signed(summaryProfit);
         returnEl.textContent = placeholder || summaryReturn === null ? '--' : signed(summaryReturn, '%');
