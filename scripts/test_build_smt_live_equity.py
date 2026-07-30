@@ -27,7 +27,9 @@ class BuilderTest(unittest.TestCase):
         self.assertEqual(payload["mode"], "live")
         self.assertEqual(payload["status"], "running")
         self.assertEqual(payload["accounting_scope"], "complete")
-        self.assertEqual(payload["points"], [{"time": "2026-07-30T03:20:34.803042Z", "profit": 0.0, "return_pct": 0.0}])
+        self.assertEqual(payload["points"][0], {"time": "2026-07-30T03:20:34.803042Z", "profit": 0.0, "return_pct": 0.0})
+        self.assertEqual(payload["points"][-1]["time"], "2026-07-30T04:00:00Z")
+        self.assertEqual(payload["points"][-1]["profit"], 0.0)
         self.assertEqual(payload["summary"], {"net_profit": 0.0, "return_pct": 0.0})
 
     def test_historical_wrappers_dedup_and_commission_scope(self):
@@ -41,7 +43,7 @@ class BuilderTest(unittest.TestCase):
         ]
         payload = self.make(events)
         self.assertEqual(payload["accounting_scope"], "partial")
-        self.assertEqual(len(payload["points"]), 3)
+        self.assertEqual(len(payload["points"]), 4)
         self.assertAlmostEqual(payload["summary"]["net_profit"], 3.4)
         self.assertAlmostEqual(payload["summary"]["return_pct"], float(round(3.4 / float(BASE_CAPITAL) * 100, 8)))
         serialized = json.dumps(payload)
