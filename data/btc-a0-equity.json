@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "symbol": "BTCUSDC",
+  "strategy": "A0",
+  "mode": "placeholder",
+  "status": "watching",
+  "status_label": "观察中",
+  "updated_at": "2026-07-30T10:36:59+08:00",
+  "currency": "USDC",
+  "initial_equity": 225,
+  "summary": {
+    "net_profit": null,
+    "return_pct": null
+  },
+  "points": [
+    { "time": "2026-07-30T08:00:00+08:00", "profit": 0, "return_pct": 0 },
+    { "time": "2026-07-30T08:30:00+08:00", "profit": 0.38, "return_pct": 0.1689 },
+    { "time": "2026-07-30T09:00:00+08:00", "profit": -0.16, "return_pct": -0.0711 },
+    { "time": "2026-07-30T09:30:00+08:00", "profit": 0.72, "return_pct": 0.32 },
+    { "time": "2026-07-30T10:00:00+08:00", "profit": 0.41, "return_pct": 0.1822 },
+    { "time": "2026-07-30T10:30:00+08:00", "profit": 1.05, "return_pct": 0.4667 }
+  ],
+  "disclaimer": "当前曲线为脱敏占位数据，仅用于页面展示，不代表实盘收益。准确净收益待 userTrades 成交记录采集并计入手续费后生成。"
+}

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d1714" />
+  <meta name="description" content="BTCUSDC A0 策略收益观察页，展示累计收益、收益率和权益曲线。" />
+  <title>BTCUSDC A0 收益曲线 · Kiki Nav</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    :root {
+      --chart-green: #159a6b;
+      --chart-green-dark: #08714d;
+      --chart-red: #df5b62;
+      --chart-grid: rgba(47, 38, 57, .1);
+    }
+    body { background: linear-gradient(145deg, #f7fbf8 0%, #fff8fc 52%, #f4f1ff 100%); }
+    .equity-shell { position: relative; padding: clamp(18px, 4vw, 30px); }
+    .equity-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr);
+      gap: 24px;
+      align-items: end;
+      padding: clamp(48px, 8vw, 86px) 0 14px;
+    }
+    .equity-hero h1 { font-size: clamp(2.35rem, 8vw, 4.9rem); letter-spacing: 0; }
+    .market-line { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .market-badge, .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 11px;
+      border: 1px solid rgba(255,255,255,.76);
+      border-radius: 999px;
+      background: rgba(255,255,255,.68);
+      color: #4d4158;
+      font-size: .84rem;
+      font-weight: 800;
+    }
+    .market-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: #e4aa35;
+      box-shadow: 0 0 0 4px rgba(228,170,53,.15);
+    }
+    .mode-badge { color: #765e18; background: rgba(255,244,199,.78); }
+    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric {
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.74);
+      border-radius: 8px;
+      background: rgba(255,255,255,.62);
+    }
+    .metric-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: .8rem; }
+    .metric-value { display: block; color: var(--ink-strong); font-size: clamp(1rem, 3.8vw, 1.35rem); font-weight: 850; overflow-wrap: anywhere; }
+    .metric-value.positive { color: var(--chart-green-dark); }
+    .metric-value.negative { color: #b6353e; }
+    .metric-value.state { display: inline-flex; align-items: center; gap: 7px; }
+    .metric-value.state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #e4aa35; }
+    main { padding-top: 22px; }
+    .chart-panel, .method-panel { padding: clamp(16px, 3vw, 24px); border-radius: 8px; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 10px; }
+    .panel-head h2, .method-panel h2 { margin: 0; color: var(--ink-strong); font-size: clamp(1.25rem, 4vw, 1.7rem); letter-spacing: 0; }
+    .panel-meta { margin: 0; color: var(--muted); font-size: .88rem; text-align: right; }
+    .chart-wrap { position: relative; width: 100%; height: clamp(280px, 48vw, 430px); touch-action: pan-y; }
+    #equity-chart { display: block; width: 100%; height: 100%; overflow: visible; }
+    .chart-tooltip {
+      position: absolute;
+      z-index: 3;
+      min-width: 142px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 8px;
+      background: rgba(29,23,38,.92);
+      box-shadow: 0 12px 32px rgba(29,23,38,.2);
+      color: #fff;
+      font-size: .82rem;
+      line-height: 1.55;
+      pointer-events: none;
+      transform: translate(-50%, calc(-100% - 14px));
+    }
+    .chart-tooltip[hidden] { display: none; }
+    .tooltip-time { color: rgba(255,255,255,.7); }
+    .tooltip-value { font-size: .98rem; font-weight: 850; }
+    .chart-empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; }
+    .chart-empty[hidden] { display: none; }
+    .chart-legend { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--muted); font-size: .84rem; }
+    .legend-line { width: 22px; height: 3px; border-radius: 3px; background: var(--chart-green); }
+    .method-panel { margin-top: 18px; }
+    .method-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 14px; }
+    .method-grid p { margin: 0; color: var(--muted); }
+    .method-grid strong { display: block; margin-bottom: 5px; color: var(--ink-strong); }
+    .data-warning {
+      margin: 18px 0 0;
+      padding: 13px 15px;
+      border-left: 4px solid #e4aa35;
+      border-radius: 0 8px 8px 0;
+      background: rgba(255,247,215,.72);
+      color: #695827;
+      font-size: .9rem;
+    }
+    @media (max-width: 760px) {
+      .equity-hero { grid-template-columns: 1fr; padding-top: 38px; }
+      .panel-head { display: block; }
+      .panel-meta { margin-top: 5px; text-align: left; }
+      .method-grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+    @media (max-width: 430px) {
+      .page-shell { width: min(100% - 20px, var(--max-width)); }
+      .equity-shell, .chart-panel, .method-panel { padding: 15px; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric { padding: 12px; }
+      .chart-wrap { height: 300px; }
+      .top-link { min-height: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="glass-panel equity-shell">
+      <nav class="topbar" aria-label="主导航">
+        <a class="brand" href="./" aria-label="返回 Kiki 工具导航首页">
+          <span class="brand-mark" aria-hidden="true"><span class="ear left"></span><span class="ear right"></span>k</span>
+          <span class="brand-text">Kiki Nav</span>
+        </a>
+        <a class="top-link" href="./">返回首页</a>
+      </nav>
+
+      <section class="equity-hero" aria-labelledby="page-title">
+        <div>
+          <div class="market-line">
+            <span class="market-badge">BTCUSDC</span>
+            <span class="mode-badge" id="mode-badge">占位数据</span>
+          </div>
+          <p class="eyebrow">A0 strategy monitor</p>
+          <h1 id="page-title">A0 收益曲线</h1>
+          <p class="subtitle">BTCUSDC 策略运行与累计净收益观察。实盘启动后，页面将按成交数据持续更新。</p>
+        </div>
+
+        <div class="metrics" aria-label="策略收益摘要">
+          <div class="metric">
+            <span class="metric-label">累计收益 USDC</span>
+            <strong class="metric-value" id="net-profit">--</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">收益率</span>
+            <strong class="metric-value" id="return-pct">--</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">当前状态</span>
+            <strong class="metric-value state" id="current-status">观察中</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">最后更新时间</span>
+            <strong class="metric-value" id="updated-at">--</strong>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="glass-panel chart-panel" aria-labelledby="chart-title">
+        <div class="panel-head">
+          <div>
+            <p class="section-kicker">equity curve</p>
+            <h2 id="chart-title">累计净收益</h2>
+          </div>
+          <p class="panel-meta" id="chart-range">正在读取数据</p>
+        </div>
+        <div class="chart-wrap" id="chart-wrap">
+          <svg id="equity-chart" role="img" aria-labelledby="chart-title chart-description"></svg>
+          <p id="chart-description" class="chart-empty" hidden>暂无可展示的收益数据</p>
+          <div class="chart-tooltip" id="chart-tooltip" role="status" hidden>
+            <div class="tooltip-time" id="tooltip-time"></div>
+            <div class="tooltip-value" id="tooltip-profit"></div>
+            <div id="tooltip-return"></div>
+          </div>
+        </div>
+        <div class="chart-legend"><span class="legend-line" aria-hidden="true"></span><span>累计净收益（USDC）</span></div>
+      </section>
+
+      <section class="glass-panel method-panel" aria-labelledby="method-title">
+        <p class="section-kicker">data definition</p>
+        <h2 id="method-title">数据口径说明</h2>
+        <div class="method-grid">
+          <p><strong>累计收益</strong>准确净收益待 Binance <code>userTrades</code> 成交记录采集，以已实现盈亏扣除手续费后统计。</p>
+          <p><strong>收益率</strong>累计净收益除以策略初始权益。未启动或数据未完成核验时，摘要不展示推算值。</p>
+        </div>
+        <p class="data-warning" id="data-warning">策略尚未启动，当前处于观察状态；曲线为脱敏占位数据，不代表实盘收益。</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const svg = document.getElementById('equity-chart');
+      const wrap = document.getElementById('chart-wrap');
+      const tooltip = document.getElementById('chart-tooltip');
+      const empty = document.getElementById('chart-description');
+      const number = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      let points = [];
+      let geometry = [];
+
+      const svgEl = (name, attrs = {}) => {
+        const node = document.createElementNS('http://www.w3.org/2000/svg', name);
+        Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+        return node;
+      };
+
+      const signed = (value, suffix = '') => `${value > 0 ? '+' : ''}${number.format(value)}${suffix}`;
+      const formatTime = (value, includeDate = false) => new Intl.DateTimeFormat('zh-CN', includeDate
+        ? { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }
+        : { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(value));
+
+      function setTone(element, value) {
+        element.classList.remove('positive', 'negative');
+        if (Number(value) > 0) element.classList.add('positive');
+        if (Number(value) < 0) element.classList.add('negative');
+      }
+
+      function renderSummary(data) {
+        const placeholder = data.mode !== 'live';
+        const profitEl = document.getElementById('net-profit');
+        const returnEl = document.getElementById('return-pct');
+        const statusEl = document.getElementById('current-status');
+        const summaryProfit = data.summary && Number.isFinite(data.summary.net_profit) ? data.summary.net_profit : null;
+        const summaryReturn = data.summary && Number.isFinite(data.summary.return_pct) ? data.summary.return_pct : null;
+
+        profitEl.textContent = placeholder || summaryProfit === null ? '--' : signed(summaryProfit);
+        returnEl.textContent = placeholder || summaryReturn === null ? '--' : signed(summaryReturn, '%');
+        setTone(profitEl, summaryProfit);
+        setTone(returnEl, summaryReturn);
+        statusEl.textContent = placeholder ? '观察中' : (data.status_label || '运行中');
+        document.getElementById('updated-at').textContent = data.updated_at ? formatTime(data.updated_at, true) : '--';
+        document.getElementById('mode-badge').textContent = placeholder ? '占位数据' : '实盘数据';
+        document.getElementById('data-warning').textContent = placeholder
+          ? (data.disclaimer || '策略尚未启动，当前处于观察状态。')
+          : '收益依据 userTrades 成交记录统计，并扣除成交手续费；交易所数据同步可能存在短暂延迟。';
+      }
+
+      function renderChart() {
+        const width = Math.max(280, Math.round(wrap.clientWidth));
+        const height = Math.max(260, Math.round(wrap.clientHeight));
+        const margin = { top: 20, right: 18, bottom: 40, left: width < 460 ? 50 : 62 };
+        const innerW = width - margin.left - margin.right;
+        const innerH = height - margin.top - margin.bottom;
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.replaceChildren();
+        geometry = [];
+
+        if (!points.length) {
+          empty.hidden = false;
+          return;
+        }
+        empty.hidden = true;
+
+        const values = points.map((point) => point.profit);
+        let min = Math.min(0, ...values);
+        let max = Math.max(0, ...values);
+        const spread = Math.max(max - min, 0.2);
+        min -= spread * .16;
+        max += spread * .16;
+        const x = (index) => margin.left + (points.length === 1 ? innerW / 2 : (index / (points.length - 1)) * innerW);
+        const y = (value) => margin.top + ((max - value) / (max - min)) * innerH;
+
+        const grid = svgEl('g', { 'aria-hidden': 'true' });
+        for (let i = 0; i <= 4; i += 1) {
+          const value = max - ((max - min) * i / 4);
+          const yy = margin.top + innerH * i / 4;
+          grid.append(svgEl('line', { x1: margin.left, y1: yy, x2: width - margin.right, y2: yy, stroke: 'rgba(47,38,57,.1)', 'stroke-width': 1 }));
+          const label = svgEl('text', { x: margin.left - 9, y: yy + 4, 'text-anchor': 'end', fill: '#786d86', 'font-size': 11 });
+          label.textContent = signed(value);
+          grid.append(label);
+        }
+        svg.append(grid);
+
+        const zeroY = y(0);
+        svg.append(svgEl('line', { x1: margin.left, y1: zeroY, x2: width - margin.right, y2: zeroY, stroke: 'rgba(47,38,57,.28)', 'stroke-width': 1, 'stroke-dasharray': '4 5' }));
+
+        const coords = points.map((point, index) => ({ x: x(index), y: y(point.profit), point }));
+        const linePath = coords.map((coord, index) => `${index ? 'L' : 'M'} ${coord.x} ${coord.y}`).join(' ');
+        const areaPath = `${linePath} L ${coords.at(-1).x} ${zeroY} L ${coords[0].x} ${zeroY} Z`;
+        const defs = svgEl('defs');
+        const gradient = svgEl('linearGradient', { id: 'equity-fill', x1: 0, y1: 0, x2: 0, y2: 1 });
+        gradient.append(svgEl('stop', { offset: '0%', 'stop-color': '#159a6b', 'stop-opacity': .24 }));
+        gradient.append(svgEl('stop', { offset: '100%', 'stop-color': '#159a6b', 'stop-opacity': .02 }));
+        defs.append(gradient);
+        svg.append(defs);
+        svg.append(svgEl('path', { d: areaPath, fill: 'url(#equity-fill)' }));
+        svg.append(svgEl('path', { d: linePath, fill: 'none', stroke: '#159a6b', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+
+        const xLabelIndexes = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])];
+        xLabelIndexes.forEach((index) => {
+          const label = svgEl('text', { x: x(index), y: height - 12, 'text-anchor': index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle', fill: '#786d86', 'font-size': 11 });
+          label.textContent = formatTime(points[index].time);
+          svg.append(label);
+        });
+
+        const guide = svgEl('line', { y1: margin.top, y2: height - margin.bottom, stroke: 'rgba(21,154,107,.35)', 'stroke-width': 1, 'stroke-dasharray': '3 4', visibility: 'hidden' });
+        const marker = svgEl('circle', { r: 5, fill: '#fff', stroke: '#159a6b', 'stroke-width': 3, visibility: 'hidden' });
+        svg.append(guide, marker);
+        geometry = coords.map((coord) => ({ ...coord, guide, marker }));
+      }
+
+      function showPoint(clientX) {
+        if (!geometry.length) return;
+        const rect = wrap.getBoundingClientRect();
+        const localX = clientX - rect.left;
+        const selected = geometry.reduce((best, item) => Math.abs(item.x - localX) < Math.abs(best.x - localX) ? item : best);
+        const { point, x, y, guide, marker } = selected;
+        guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('visibility', 'visible');
+        marker.setAttribute('cx', x); marker.setAttribute('cy', y); marker.setAttribute('visibility', 'visible');
+        document.getElementById('tooltip-time').textContent = formatTime(point.time, true);
+        document.getElementById('tooltip-profit').textContent = `${signed(point.profit)} USDC`;
+        document.getElementById('tooltip-return').textContent = `收益率 ${signed(point.return_pct, '%')}`;
+        tooltip.hidden = false;
+        const tooltipX = Math.min(rect.width - 76, Math.max(76, x));
+        const tooltipY = y < 105 ? y + 142 : y;
+        tooltip.style.left = `${tooltipX}px`;
+        tooltip.style.top = `${tooltipY}px`;
+      }
+
+      function hidePoint() {
+        tooltip.hidden = true;
+        geometry.forEach(({ guide, marker }) => { guide.setAttribute('visibility', 'hidden'); marker.setAttribute('visibility', 'hidden'); });
+      }
+
+      wrap.addEventListener('pointermove', (event) => showPoint(event.clientX));
+      wrap.addEventListener('pointerdown', (event) => showPoint(event.clientX));
+      wrap.addEventListener('pointerleave', hidePoint);
+      wrap.addEventListener('pointercancel', hidePoint);
+      window.addEventListener('resize', renderChart);
+
+      fetch('data/btc-a0-equity.json', { cache: 'no-store' })
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          renderSummary(data);
+          points = Array.isArray(data.points) ? data.points
+            .filter((point) => point && !Number.isNaN(Date.parse(point.time)) && Number.isFinite(point.profit) && Number.isFinite(point.return_pct))
+            .sort((a, b) => Date.parse(a.time) - Date.parse(b.time)) : [];
+          document.getElementById('chart-range').textContent = points.length > 1
+            ? `${formatTime(points[0].time, true)} 至 ${formatTime(points.at(-1).time, true)}`
+            : points.length === 1 ? formatTime(points[0].time, true) : '暂无数据';
+          renderChart();
+        })
+        .catch((error) => {
+          console.warn('equity data fetch failed', error);
+          document.getElementById('chart-range').textContent = '数据暂不可用';
+          document.getElementById('data-warning').textContent = '收益数据读取失败，当前保持观察状态，请稍后刷新。';
+          renderChart();
+        });
+    })();
+  </script>
+</body>
+</html>

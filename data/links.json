@@ -61,5 +61,14 @@
     "emoji": "📶",
     "description": "代理外网健康检测页。用 kycloud 订阅代理访问 Google、GitHub、Cloudflare、Wikipedia 等典型外网链接，并展示时间序列状态条。",
     "cta": "查看代理状态"
+  },
+  {
+    "name": "BTCUSDC A0 收益曲线",
+    "url": "./btc-a0.html",
+    "tag": "Trading",
+    "accent": "cyan",
+    "emoji": "📈",
+    "description": "A0 策略累计净收益与收益率观察页。实盘未启动时保持观察状态，不展示推算收益。",
+    "cta": "查看收益曲线"
   }
 ]
