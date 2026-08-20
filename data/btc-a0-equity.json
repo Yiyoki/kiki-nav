@@ -6,26 +6,16 @@
   "accounting_scope": "complete",
   "accounting_note": "净已实现收益（realizedPnl 减 USDC 手续费）；未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓",
   "base_capital": 99.49405209,
-  "generated_at": "2026-08-20T01:10:04.888329Z",
+  "generated_at": "2026-08-20T01:15:02.577207Z",
   "session_start": "2026-07-30T03:20:34.803042Z",
   "summary": {
-    "net_profit": -16.53472868,
-    "return_pct": -16.61881121,
-    "realized_net": -16.53472868,
-    "unrealized_mtm": 1.1164619,
-    "strategy_mtm": -15.41826678
+    "net_profit": -15.76929536,
+    "return_pct": -15.8494855,
+    "realized_net": -15.76929536,
+    "unrealized_mtm": 0.31530849,
+    "strategy_mtm": -15.45398687
   },
   "points": [
-    {
-      "time": "2026-08-01T02:20:41.391000Z",
-      "profit": 0.13612408,
-      "return_pct": 0.1368163
-    },
-    {
-      "time": "2026-08-01T02:32:34.076000Z",
-      "profit": 0.13612408,
-      "return_pct": 0.1368163
-    },
     {
       "time": "2026-08-01T02:35:28.624000Z",
       "profit": 0.13612408,
@@ -1452,9 +1442,19 @@
       "return_pct": -16.61881121
     },
     {
-      "time": "2026-08-20T01:10:04.888329Z",
-      "profit": -16.53472868,
-      "return_pct": -16.61881121
+      "time": "2026-08-20T01:10:38.936000Z",
+      "profit": -16.16636202,
+      "return_pct": -16.24857133
+    },
+    {
+      "time": "2026-08-20T01:11:06.251000Z",
+      "profit": -15.76929536,
+      "return_pct": -15.8494855
+    },
+    {
+      "time": "2026-08-20T01:15:02.577207Z",
+      "profit": -15.76929536,
+      "return_pct": -15.8494855
     }
   ]
 }
