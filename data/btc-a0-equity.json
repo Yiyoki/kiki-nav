@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
   "mode": "live",
-  "status": "running",
-  "status_label": "运行中",
+  "status": "stopped",
+  "status_label": "已停止",
   "accounting_scope": "complete",
   "accounting_note": "净已实现收益（realizedPnl 减 USDC 手续费）；未实现 MTM 来自只读 signed GET /fapi/v2/positionRisk 的 BTCUSDC 非零持仓",
   "base_capital": 99.49405209,
-  "generated_at": "2026-10-05T07:30:02.461405Z",
+  "generated_at": "2026-10-05T07:35:02.019048Z",
   "session_start": "2026-08-14T13:29:24.431662Z",
   "summary": {
     "net_profit": -0.3678837,
@@ -562,7 +562,7 @@
       "return_pct": -0.36975446
     },
     {
-      "time": "2026-10-05T07:30:02.461405Z",
+      "time": "2026-10-05T07:35:02.019048Z",
       "profit": -0.3678837,
       "return_pct": -0.36975446
     }
